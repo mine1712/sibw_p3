@@ -1,0 +1,92 @@
+{% extends "portada.twig" %}
+
+{% block contenido_principal %}
+    {# Pasamos los datos al JS usando el DOM (Sin mezclar lenguajes) #}
+    <aside class="zona-comentarios" 
+           data-id-noticia="{{ noticia.id }}" 
+           data-lugares="{{ lugares|json_encode }}">
+        
+        <div id="btn-cerrar-panel">&times;</div>
+        
+        <div class="cabecera-comentarios">
+            <h3>Comentarios</h3>
+            <button id="btn-nuevo-comentario">Nuevo Comentario</button>
+        </div>
+        
+        {# Formulario de comentarios (se oculta/muestra con JS) #}
+        <form id="form-comentario" class="oculto">
+            <div class="campo">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" maxlength="30" required>
+            </div>
+            
+            <div class="campo">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" maxlength="30" required>
+            </div>
+            
+            <div class="campo">
+                <label for="comentario-texto">Comentario:</label>
+                <textarea id="comentario-texto" name="comentario" maxlength="200" required></textarea>
+            </div>
+            
+            <div class="botones-form">
+                <button type="submit" id="btn-enviar">Enviar</button>
+                <button type="button" id="btn-cancelar">Cancelar</button>
+            </div>
+        </form>
+
+        {# Listado dinámico de comentarios #}
+        <div id="lista-comentarios" class="comentarios-existentes">
+            {% for com in comentarios %}
+                <div class="comentario">
+                    <p class="autor">{{ com.nombre }}</p>
+                    <p class="fecha-hora">{{ com.fecha }}</p>
+                    <p class="texto">{{ com.texto }}</p>
+                </div>
+            {% else %}
+                <p class="sin-comentarios">Aún no hay comentarios. ¡Sé el primero!</p>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <main class="zona-detalle">
+        <article class="caja-noticia-completa">
+            <div class="noticia-header">
+                {# Título y Lugar #}
+                <h2>{{ noticia.titulo }} - {{ noticia.nombre_lugar }}</h2>
+                
+                {# BOTONES DE REDES SOCIALES (Recuperados) #}
+                <div class="redes-sociales">
+                    <a href="https://www.tiktok.com/@ayuntamientodepeligros" class="btn-rs tiktok" target="_blank">tiktok</a>
+                    <a href="https://www.instagram.com/ayuntamientodepeligros/" class="btn-rs instagram" target="_blank">instagram</a>
+                    <a href="https://x.com/PeligrosSuena" class="btn-rs twitter" target="_blank">twitter</a>
+                    <a href="noticia_imprimir.php?id={{ noticia.id }}" class="btn-rs imprimir" target="_blank">imprimir</a>
+                </div>
+            </div>
+
+            <div class="info-meta">
+                <p><strong>Fecha:</strong> {{ noticia.fecha }} | <strong>Sección:</strong> {{ noticia.concejalia }}</p>
+            </div>
+
+            <div class="info-texto">
+                {# nl2br respeta los saltos de línea y Twig sanitiza el texto automáticamente #}
+                <p>{{ noticia.descripcion|nl2br }}</p>
+            </div>
+
+            <div class="galeria-fotos">
+                {% for img in imagenes %}
+                    <div class="foto-item">
+                        {# Asegúrate de que tu carpeta se llame img #}
+                        <img src="img/{{ img.ruta_archivo }}" alt="Imagen de {{ noticia.titulo }}">
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+    {# Cargamos el JS externo sin mezclar con el HTML #}
+    <script src="js/aside-comentarios.js"></script>
+{% endblock %}

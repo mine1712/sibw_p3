@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Incidencias Peligros</title>
+    <link rel="stylesheet" href="/css/portada_noticia.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="portada.php">
+                <img src="img/logo.png" alt="Logo">
+            </a>
+        </div>
+        <div class="nombre">
+            <h1>Incidencias en Peligros</h1>
+        </div>
+        <nav class="enlaces">
+            <a href="https://www.granada.org/inet/wambiente.nsf/directorio">Concejalía MedioAmbiente</a>
+            <a href="https://www.granada.org/">Ayuntamiento de Granada</a>
+            <a href="https://www.juntadeandalucia.es/">Junta de Andalucía</a>
+        </nav>
+    </header>
+    <aside class="aside-izquierda">
+        <ul>
+            <li><a href="portada.php">Inicio</a></li>
+            <li>Menu 1</li>
+            <li>Menu 2</li>
+        </ul>
+    </aside>
+
+    {% block contenido_principal %}
+        <main class="contenedor-noticias">
+            {% for n in noticias %}
+                <article class="noticia">
+                    <a href="noticia.php?id={{ n.id }}" style="text-decoration:none;">
+                     
+                        <img src="img/{{ n.imagen_principal }}" alt="{{ n.titulo }}">
+                        <h3>{{ n.titulo }}</h3>
+                    </a>
+                </article>
+            {% endfor %}
+        </main>
+    {% endblock %}
+
+    <footer>
+        <div class="footer-arriba">
+            <div class="id">Identificacion</div>
+            <div class="web">
+                <a href="https://ayuntamientopeligros.es/">Web Ayuntamiento</a>
+            </div>
+            <div class="aviso-legal">Aviso legal</div>
+        </div>
+        <div class="footer-abajo">
+            <p>&copy; Copyright</p>
+        </div>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

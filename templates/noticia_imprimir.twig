@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Imprimir - {{ noticia.titulo }}</title>
+    <link rel="stylesheet" href="css/noticia_imprimir.css">
+    
+
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="portada.php">
+                <img src="img/logo.png" alt="Logo">
+            </a>
+        </div>
+        <div class="nombre">
+            <h1>Incidencias en Peligros</h1>
+        </div>
+        <nav class="enlaces">
+            <a href="https://www.instagram.com/ayuntamientodepeligros/">Instagram</a>
+            <a href="https://www.tiktok.com/@ayuntamientodepeligros">TikTok</a>
+            <a href="https://www.facebook.com/ayuntamiento.peligros/?locale=es_ES">Facebook</a>
+        </nav>
+    </header>
+
+    <aside>
+        <ul>
+            <li>Menu 1</li>
+            <li>Menu 2</li>
+            <li>Menu 3</li>
+        </ul>
+    </aside>
+
+    <main class="zona-detalle">
+        <div class="caja-noticia-completa">
+            <div class="noticia-header">
+                <h2>{{ noticia.titulo }} {{ noticia.nombre_lugar }}</h2>
+                <div class="redes-sociales">
+                    <a href="https://www.tiktok.com/@ayuntamientodepeligros" class="btn-rs tiktok">tiktok</a>
+                    <a href="https://www.instagram.com/ayuntamientodepeligros/" class="btn-rs instagram">instagram</a>
+                    <a href="https://x.com/PeligrosSuena" class="btn-rs twitter">twitter</a>
+                    <a href="noticia_imprimir.php?id={{ noticia.id }}" class="btn-rs imprimir" target="_blank">imprimir</a>
+                </div>
+            </div>
+
+            <div class="info-texto">
+                <p><strong>Fecha:</strong> {{ noticia.fecha|date("d/m/Y") }} | <strong>Responsable:</strong> {{ noticia.concejalia}}</p>
+                <br>
+                <p>{{ noticia.descripcion|nl2br }}</p>
+            </div>
+
+            <div class="galeria-fotos">
+                {% for img in imagenes %}
+                    <img src="img/{{ img.ruta_archivo }}" alt="Foto de la incidencia">
+                {% endfor %}
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-arriba">
+            <div class="id">Identificacion</div>
+            <div class="web"><a href="#">Web Ayuntamiento</a></div>
+            <div class="aviso-legal">Aviso legal</div>
+        </div>
+        <div class="footer-abajo">
+            <p>&copy; Copyright - {{ "now"|date("Y") }}</p>
+        </div>
+    </footer>
+</body>
+</html>
