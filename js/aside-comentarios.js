@@ -8,19 +8,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var area = document.getElementById('comentario-texto');
     var btnCerrar = document.getElementById('btn-cerrar-panel');
 
-    // --- CORRECCIÓN: FETCH ASÍNCRONO PARA LUGARES ---
+    
     var localidades = [];
     async function cargarLugares() {
         try {
-            // Hacemos la petición al caso específico que creamos en PHP
+           
             const respuesta = await fetch('noticia.php?ajax_lugares=1');
-            localidades = await respuesta.json(); // Ahora localidades tiene los objetos de la BD
+            localidades = await respuesta.json(); 
         } catch (e) {
             console.error("Error cargando lugares:", e);
         }
     }
-    cargarLugares(); // Ejecutamos la carga al iniciar
-    // ------------------------------------------------
+    cargarLugares();
 
     function agregarComentarioAlDOM(nombre, fecha, mensaje) {
         var aviso = document.querySelector('.sin-comentarios');
@@ -37,12 +36,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     area.oninput = function () {
         var textoActual = area.value;
-        // Solo filtramos si ya se han cargado las localidades
+        
         localidades.forEach(function(pueblo) {
-            var nombrePueblo = pueblo.nombre; // Accedemos a la propiedad del objeto[cite: 3]
+            var nombrePueblo = pueblo.nombre;
             
             if (nombrePueblo) {
-                // Buscamos la palabra exacta sin importar mayúsculas/minúsculas
+              
                 var reg = new RegExp('\\b' + nombrePueblo + '\\b', 'gi');
                 textoActual = textoActual.replace(reg, nombrePueblo.toUpperCase());
             }
@@ -50,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         area.value = textoActual;
     };
 
-    // Interfaz
+   
     document.onmousemove = function (e) {
         var width = window.innerWidth;
         if (e.clientX > (width - 20)) sidebar.classList.add('visible');
@@ -68,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
     };
 
-    // Envío del comentario[cite: 6]
+   
     form.onsubmit = function (e) {
         e.preventDefault();
 
@@ -77,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var textoVal  = area.value.trim(); 
         var idNoticia = sidebar.getAttribute('data-id-noticia');
 
-        // Validaciones básicas
+       
         var expEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
         if (nombreVal === "" || emailVal === "" || textoVal === "") {
             alert('Error: Todos los campos son obligatorios.');

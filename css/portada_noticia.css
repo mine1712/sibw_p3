@@ -1,4 +1,4 @@
-/* RESET GENERAL */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -30,7 +30,7 @@ header {
     padding: 20px;
     background-color: #ffffff;
     border-bottom: 3px solid #3498db;
-    border-radius: 8px; /* Ajustado de 5% a 8px para mejor estética */
+    border-radius: 8px; 
 }
 
 .logo img {
@@ -172,14 +172,14 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* REDES SOCIALES (FIXED) */
+/* REDES SOCIALES*/
 .redes-sociales {
     display: flex;
     position: fixed;
     flex-direction: row;
     gap: 8px;
     right: 40px;
-    top: 130px; /* Ajustado para que no tape el header */
+    top: 130px; 
     z-index: 900;
 }
 
