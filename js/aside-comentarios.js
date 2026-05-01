@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // 1. Elementos del DOM
     var lista = document.getElementById('lista-comentarios');
     var sidebar = document.querySelector('.zona-comentarios');
     var btnNuevo = document.getElementById('btn-nuevo-comentario');
@@ -9,16 +8,20 @@ document.addEventListener('DOMContentLoaded', function () {
     var area = document.getElementById('comentario-texto');
     var btnCerrar = document.getElementById('btn-cerrar-panel');
 
-    // 2. Carga de lugares para el filtro (desde el data-attribute de Twig)
-    var lugaresData = sidebar.getAttribute('data-lugares');
+    // --- CORRECCIÓN: FETCH ASÍNCRONO PARA LUGARES ---
     var localidades = [];
-    try {
-        localidades = JSON.parse(lugaresData || "[]");
-    } catch (e) {
-        console.error("Error con los lugares:", e);
+    async function cargarLugares() {
+        try {
+            // Hacemos la petición al caso específico que creamos en PHP
+            const respuesta = await fetch('noticia.php?ajax_lugares=1');
+            localidades = await respuesta.json(); // Ahora localidades tiene los objetos de la BD
+        } catch (e) {
+            console.error("Error cargando lugares:", e);
+        }
     }
+    cargarLugares(); // Ejecutamos la carga al iniciar
+    // ------------------------------------------------
 
-    // 3. Función para pintar en la lista
     function agregarComentarioAlDOM(nombre, fecha, mensaje) {
         var aviso = document.querySelector('.sin-comentarios');
         if (aviso) aviso.remove();
@@ -32,17 +35,22 @@ document.addEventListener('DOMContentLoaded', function () {
         lista.insertAdjacentHTML('afterbegin', bloque);
     }
 
-    // 4. Filtro de palabras (Mayúsculas)
     area.oninput = function () {
         var textoActual = area.value;
+        // Solo filtramos si ya se han cargado las localidades
         localidades.forEach(function(pueblo) {
-            var reg = new RegExp('\\b' + pueblo + '\\b', 'gi');
-            textoActual = textoActual.replace(reg, pueblo.toUpperCase());
+            var nombrePueblo = pueblo.nombre; // Accedemos a la propiedad del objeto[cite: 3]
+            
+            if (nombrePueblo) {
+                // Buscamos la palabra exacta sin importar mayúsculas/minúsculas
+                var reg = new RegExp('\\b' + nombrePueblo + '\\b', 'gi');
+                textoActual = textoActual.replace(reg, nombrePueblo.toUpperCase());
+            }
         });
         area.value = textoActual;
     };
 
-    // 5. Interfaz (Ratón y Botones)
+    // Interfaz
     document.onmousemove = function (e) {
         var width = window.innerWidth;
         if (e.clientX > (width - 20)) sidebar.classList.add('visible');
@@ -60,17 +68,16 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
     };
 
-    // 6. ENVÍO AL SERVIDOR (AJAX)
+    // Envío del comentario[cite: 6]
     form.onsubmit = function (e) {
         e.preventDefault();
 
-        // CAPTURA DE DATOS
         var nombreVal = document.getElementById('nombre').value.trim();
         var emailVal  = document.getElementById('email').value.trim();
-        var textoVal  = area.value.trim(); // area es el textarea
+        var textoVal  = area.value.trim(); 
         var idNoticia = sidebar.getAttribute('data-id-noticia');
 
-        // Validaciones
+        // Validaciones básicas
         var expEmail = /^\w+([.-_+]?\w+)*@\w+([.-]?\w+)*(\.\w{2,10})+$/;
         if (nombreVal === "" || emailVal === "" || textoVal === "") {
             alert('Error: Todos los campos son obligatorios.');
@@ -81,14 +88,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // PREPARACIÓN DE DATOS PARA PHP
         var datos = new FormData();
         datos.append('id_noticia', idNoticia);
         datos.append('nombre', nombreVal);
         datos.append('email', emailVal);
-        datos.append('comentario', textoVal); // DEBE coincidir con $_POST['comentario'] en PHP
+        datos.append('comentario', textoVal); 
 
-        // PETICIÓN FETCH
         fetch('noticia.php', {
             method: 'POST',
             body: datos
@@ -96,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(res => {
             if (res.status === 'success') {
-                // Crear fecha bonita para el usuario
                 var ahora = new Date();
                 var fechaActual = ahora.getDate().toString().padStart(2, '0') + "/" + 
                                   (ahora.getMonth() + 1).toString().padStart(2, '0') + "/" + 
@@ -105,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                   ahora.getMinutes().toString().padStart(2, '0');
 
                 agregarComentarioAlDOM(nombreVal, fechaActual, textoVal);
-                
                 alert('¡Comentario enviado!');
                 form.reset();
                 form.classList.add('oculto');
