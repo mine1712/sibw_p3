@@ -1,4 +1,7 @@
 <?php
+// --- 1. ESTO ES LO QUE TE FALTA (VITAL) ---
+session_start(); 
+
 require_once 'vendor/autoload.php';
 require_once 'includes/bd.php';
 
@@ -7,7 +10,6 @@ $twig = new \Twig\Environment($loader);
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-
 if (!$id && !isset($_GET['ajax_lugares']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: portada.php");
     exit;
@@ -15,14 +17,12 @@ if (!$id && !isset($_GET['ajax_lugares']) && $_SERVER['REQUEST_METHOD'] !== 'POS
 
 $conexion = conectarBD();
 
-
 if (isset($_GET['ajax_lugares'])) {
     $lugares = $conexion->query("SELECT nombre FROM lugar")->fetch_all(MYSQLI_ASSOC);
     header('Content-Type: application/json');
     echo json_encode($lugares);
     exit; 
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_noticia = filter_input(INPUT_POST, 'id_noticia', FILTER_VALIDATE_INT);
@@ -32,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($id_noticia && !empty($nombre) && !empty($texto)) {
         try {
-            // Inyección SQL 
             $sentencia = $conexion->prepare("INSERT INTO comentarios (id_noticia, nombre, email, texto, fecha) VALUES (?, ?, ?, ?, NOW())");
             $sentencia->bind_param("isss", $id_noticia, $nombre, $email, $texto);
             $sentencia->execute();
@@ -49,9 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// nombre de lugar para el twig
 try {
-    
     $sentencia = $conexion->prepare("
         SELECT n.*, l.nombre AS nombre_lugar 
         FROM noticia n 
@@ -66,18 +63,19 @@ try {
     if (!$noticia) { 
         throw new Exception("Noticia no encontrada");
     }
-    
-    
 
-    // Consulta de imágenes
     $sentenciaImg = $conexion->prepare("SELECT ruta_archivo FROM imagenes WHERE id_noticia = ?");
     $sentenciaImg->bind_param("i", $id);
     $sentenciaImg->execute();
     $imagenes = $sentenciaImg->get_result()->fetch_all(MYSQLI_ASSOC);
     $sentenciaImg->close();
 
-    // Comentarios existentes
-    $comentarios = $conexion->query("SELECT * FROM comentarios WHERE id_noticia = $id ORDER BY fecha DESC")->fetch_all(MYSQLI_ASSOC);
+    // --- MEJORA: Consulta de comentarios con prepare para evitar sustos ---
+    $sentenciaCom = $conexion->prepare("SELECT * FROM comentarios WHERE id_noticia = ? ORDER BY fecha DESC");
+    $sentenciaCom->bind_param("i", $id);
+    $sentenciaCom->execute();
+    $comentarios = $sentenciaCom->get_result()->fetch_all(MYSQLI_ASSOC);
+    $sentenciaCom->close();
 
     $conexion->close();
 
@@ -86,9 +84,10 @@ try {
     exit;
 }
 
-// Renderizado
+// --- 2. AHORA $_SESSION YA TIENE VALOR ---
 echo $twig->render('noticia.twig', [
     'noticia'     => $noticia,
     'imagenes'    => $imagenes,
-    'comentarios' => $comentarios
+    'comentarios' => $comentarios,
+    'session'     => $_SESSION 
 ]);

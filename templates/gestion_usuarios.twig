@@ -1,0 +1,57 @@
+{% extends "portada.twig" %}
+
+{% block contenido_principal %}
+<link rel="stylesheet" href="css/gestion_usuarios.css">
+<div class="admin-panel">
+    <h2>Panel de Administración de Usuarios</h2>
+    
+    {% if mensaje %}
+        <p class="alert">{{ mensaje }}</p>
+    {% endif %}
+
+    <table class="tabla-gestion">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Rol de Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.email }}</td>
+                <td>
+                    <form action="gestion_usuarios.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="id_usuario" value="{{ u.id }}">
+                        <input type="hidden" name="accion" value="cambiar_rol">
+                        <select name="nuevo_rol" onchange="this.form.submit()" {{ u.id == session.id_user ? 'disabled' : '' }}>
+                            {% for rol in roles_disponibles %}
+                                <option value="{{ rol }}" {{ u.rol == rol ? 'selected' : '' }}>{{ rol|capitalize }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </td>
+                <td>
+                    {% if u.id != session.id_user %}
+                        <form action="gestion_usuarios.php" method="POST" onsubmit="return confirm('¿Eliminar usuario?')">
+                            <input type="hidden" name="id_usuario" value="{{ u.id }}">
+                            <input type="hidden" name="accion" value="borrar_usuario">
+                            <button type="submit" class="btn-borrar">Eliminar</button>
+                        </form>
+                    {% else %}
+                        <span class="badge">Eres tú</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="acciones-finales">
+        <a href="usuarios.php" class="btn-volver">⬅ Volver a mi Perfil</a>
+    </div>
+</div>
+{% endblock %}

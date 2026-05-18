@@ -1,0 +1,61 @@
+{% extends "portada.twig" %}
+
+{% block contenido_principal %}
+<link rel="stylesheet" href="css/acceso.css">
+
+<div class="auth-wrapper">
+    <div class="auth-card wide">
+        <h2>Moderación de Comentarios</h2>
+
+        {% if comentario_editar %}
+            <div style="background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #ddd;">
+                <h3>Editando comentario de: {{ comentario_editar.nombre }}</h3>
+                
+                <form action="gestion_comentarios.php" method="POST">
+                    <input type="hidden" name="id_edit" value="{{ comentario_editar.id }}">
+                    
+                    {# IMPORTANTE: id="comentario-texto" para que tu JS lo reconozca #}
+                    <textarea name="texto" id="comentario-texto" style="width: 100%; height: 120px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;">{{ comentario_editar.texto }}</textarea>
+                    
+                    <div style="margin-top: 10px;">
+                        <button type="submit" style="background: #2c3e50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Guardar Cambios</button>
+                        <a href="gestion_comentarios.php" style="margin-left: 10px; color: #666;">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+
+        <table class="data-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #eee;">
+                    <th style="padding: 10px; text-align: left;">Usuario</th>
+                    <th style="padding: 10px; text-align: left;">Comentario</th>
+                    <th style="padding: 10px; text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in comentarios %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;">
+                        <strong>{{ c.nombre }}</strong><br>
+                        <small style="color: #888;">{{ c.email }}</small>
+                    </td>
+                    <td style="padding: 10px;">{{ c.texto }}</td>
+                    <td style="padding: 10px; text-align: center;" class="acciones-iconos">
+                        <a href="gestion_comentarios.php?accion=editar&id={{ c.id }}">✏️</a>
+                        <a href="gestion_comentarios.php?accion=borrar&id={{ c.id }}" onclick="return confirm('¿Borrar?')">🗑️</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px;">
+            <a href="acceso.php">⬅ Volver al Menú</a>
+        </div>
+    </div>
+</div>
+
+{# Cargamos tu script para que gestione el oninput del textarea #}
+<script src="js/aside-comentarios.js"></script>
+{% endblock %}

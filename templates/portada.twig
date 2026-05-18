@@ -16,16 +16,49 @@
             <h1>Incidencias en Peligros</h1>
         </div>
         <nav class="enlaces">
+            {% if session.login %}
+                {# El nombre ahora es un enlace directo a la edición de perfil #}
+                <a href="perfil.php" title="Editar mi perfil" style="text-decoration:none;">
+                    <span style="color:#2c3e50; font-size:14px; font-weight:600;">👤 {{ session.user }}</span>
+                </a>
+                <a href="logout.php">Cerrar sesión</a>
+            {% else %}
+                <a href="login.php?modo=login">Iniciar sesión</a>
+                <a href="login.php?modo=registro">Registrarse</a>
+            {% endif %}
             <a href="https://www.granada.org/inet/wambiente.nsf/directorio">Concejalía MedioAmbiente</a>
             <a href="https://www.granada.org/">Ayuntamiento de Granada</a>
             <a href="https://www.juntadeandalucia.es/">Junta de Andalucía</a>
         </nav>
     </header>
+
     <aside class="aside-izquierda">
         <ul>
             <li><a href="portada.php">Inicio</a></li>
-            <li>Menu 1</li>
-            <li>Menu 2</li>
+
+            {% if session.login %}
+                {# --- SECCIÓN MI PERFIL: Acceso a edición y baja --- #}
+                <li><a href="perfil.php" style="font-weight:bold; color:#3498db;">👤 Mi Perfil</a></li>
+
+                {# --- PANEL GENERAL (Noticias/Dashboard) --- #}
+                <li><a href="acceso.php">Panel de Gestión</a></li>
+
+                {# --- GESTIÓN DE NOTICIAS (Solo Gestores y Superusuarios) --- #}
+                {% if session.rol == 'gestor' or session.rol == 'superusuario' %}
+                    <li><a href="acceso.php?vista=noticias">Gestión Noticias</a></li>
+                {% endif %}
+
+                {# --- GESTIÓN DE USUARIOS (Solo Superusuarios) --- #}
+                {% if session.rol == 'superusuario' %}
+                    <li><a href="gestion_usuarios.php">Gestión Usuarios</a></li>
+                {% endif %}
+
+                <li><a href="logout.php">Cerrar sesión</a></li>
+
+            {% else %}
+                <li><a href="login.php?modo=login">Iniciar sesión</a></li>
+                <li><a href="login.php?modo=registro">Registrarse</a></li>
+            {% endif %}
         </ul>
     </aside>
 
@@ -34,7 +67,6 @@
             {% for n in noticias %}
                 <article class="noticia">
                     <a href="noticia.php?id={{ n.id }}" style="text-decoration:none;">
-                     
                         <img src="img/{{ n.imagen_principal }}" alt="{{ n.titulo }}">
                         <h3>{{ n.titulo }}</h3>
                     </a>
@@ -45,16 +77,17 @@
 
     <footer>
         <div class="footer-arriba">
-            <div class="id">Identificacion</div>
+            <div class="id">Identificación</div>
             <div class="web">
                 <a href="https://ayuntamientopeligros.es/">Web Ayuntamiento</a>
             </div>
             <div class="aviso-legal">Aviso legal</div>
         </div>
         <div class="footer-abajo">
-            <p>&copy; Copyright</p>
+            <p>&copy; Copyright 2026 - {{ session.user|default('Minerva Cebrián') }}</p>
         </div>
     </footer>
+
     {% block scripts %}{% endblock %}
 </body>
 </html>

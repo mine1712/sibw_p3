@@ -1,9 +1,11 @@
 {% extends "portada.twig" %}
 
 {% block contenido_principal %}
+    {# --- CAMBIO: Añadimos data-es-moderador para que el JS sepa si pintar botones en comentarios nuevos --- #}
     <aside class="zona-comentarios" 
            data-id-noticia="{{ noticia.id }}" 
-           data-lugares="{{ lugares|json_encode }}">
+           data-lugares="{{ lugares|json_encode }}"
+           data-es-moderador="{{ session.rol in ['moderador', 'superusuario'] ? '1' : '0' }}">
         
         <div id="btn-cerrar-panel">&times;</div>
         
@@ -12,7 +14,7 @@
             <button id="btn-nuevo-comentario">Nuevo Comentario</button>
         </div>
         
-        {# Formulario de comentarios#}
+        {# Formulario de comentarios #}
         <form id="form-comentario" class="oculto">
             <div class="campo">
                 <label for="nombre">Nombre:</label>
@@ -38,10 +40,19 @@
         {# Listado de comentarios #}
         <div id="lista-comentarios" class="comentarios-existentes">
             {% for com in comentarios %}
-                <div class="comentario">
+                <div class="comentario" data-id="{{ com.id }}">
                     <p class="autor">{{ com.nombre }}</p>
                     <p class="fecha-hora">{{ com.fecha }}</p>
                     <p class="texto">{{ com.texto }}</p>
+
+                    {# --- PUNTO A: Iconos de gestión para moderadores --- #}
+                    {% if session.rol in ['moderador', 'superusuario'] %}
+                        <div class="admin-comentarios-aside">
+                            <a href="gestion_comentarios.php?accion=editar&id={{ com.id }}" title="Editar comentario">✏️</a>
+                            <a href="gestion_comentarios.php?accion=borrar&id={{ com.id }}" 
+                               onclick="return confirm('¿Borrar comentario?')" title="Borrar comentario">🗑️</a>
+                        </div>
+                    {% endif %}
                 </div>
             {% else %}
                 <p class="sin-comentarios">Aún no hay comentarios. ¡Sé el primero!</p>
@@ -51,14 +62,26 @@
 
     <main class="zona-detalle">
         <article class="caja-noticia-completa">
+            
+            {# --- HERRAMIENTAS DE GESTIÓN (Noticia) --- #}
+            {% if session.rol == 'gestor' or session.rol == 'superusuario' %}
+                <div class="admin-bar">
+                    <strong class="admin-label">⚙️ Gestión:</strong>
+                    <a href="gestion_noticia.php?id={{ noticia.id }}" class="admin-link-edit">✏️ Editar Noticia</a>
+                    <a href="gestion_noticia.php" class="admin-link-add">➕ Añadir Nueva</a>
+                    <a href="gestion_noticia.php?borrar_noticia={{ noticia.id }}"
+                       class="admin-link-delete" 
+                       onclick="return confirm('¿Seguro?')">🗑️ Borrar</a>
+                </div>
+            {% endif %}
+
             <div class="noticia-header">
-                {# Título y Lugar #}
-                <h2>{{ noticia.titulo }} - {{ noticia.nombre_lugar }}</h2>
+                <h2>{{ noticia.titulo }} - <span class="lugar-texto">{{ noticia.nombre_lugar }}</span></h2>
                 
                 <div class="redes-sociales">
-                    <a href="https://www.tiktok.com/@ayuntamientodepeligros" class="btn-rs tiktok" target="_blank">tiktok</a>
-                    <a href="https://www.instagram.com/ayuntamientodepeligros/" class="btn-rs instagram" target="_blank">instagram</a>
-                    <a href="https://x.com/PeligrosSuena" class="btn-rs twitter" target="_blank">twitter</a>
+                    <a href="https://www.tiktok.com/@ayuntamientodepeligros" class="btn-rs tiktok" target="_blank" rel="noopener">tiktok</a>
+                    <a href="https://www.instagram.com/ayuntamientodepeligros/" class="btn-rs instagram" target="_blank" rel="noopener">instagram</a>
+                    <a href="https://x.com/PeligrosSuena" class="btn-rs twitter" target="_blank" rel="noopener">twitter</a>
                     <a href="noticia_imprimir.php?id={{ noticia.id }}" class="btn-rs imprimir" target="_blank">imprimir</a>
                 </div>
             </div>
@@ -68,14 +91,28 @@
             </div>
 
             <div class="info-texto">
-                {# nl2br respeta los saltos de línea y Twig sanitiza el texto automáticamente #}
                 <p>{{ noticia.descripcion|nl2br }}</p>
             </div>
 
+            {# --- HASHTAGS --- #}
+            {% if noticia.hashtags %}
+                <div class="noticia-hashtags">
+                    {% set tags = noticia.hashtags|replace({' ': ','})|split(',') %}
+                    {% for tag in tags %}
+                        {% if tag|trim is not empty %}
+                            <span class="hashtag-item">
+                                {% if tag|first == '#' %}{{ tag|trim }}{% else %}#{{ tag|trim }}{% endif %}
+                            </span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {# --- GALERÍA DE FOTOS --- #}
             <div class="galeria-fotos">
                 {% for img in imagenes %}
                     <div class="foto-item">
-                        <img src="img/{{ img.ruta_archivo }}" alt="Imagen de {{ noticia.titulo }}">
+                        <img src="img/{{ img.ruta_archivo }}" alt="Imagen de {{ noticia.titulo }}" class="foto-noticia">
                     </div>
                 {% endfor %}
             </div>
@@ -84,6 +121,5 @@
 {% endblock %}
 
 {% block scripts %}
-   
     <script src="js/aside-comentarios.js"></script>
 {% endblock %}

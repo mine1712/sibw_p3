@@ -1,0 +1,148 @@
+/* --- Contenedor Principal --- */
+.auth-wrapper {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 450px;
+    transition: all 0.3s ease;
+}
+
+.auth-card.wide {
+    max-width: 950px; /* Se ensancha para la tabla */
+}
+
+/* --- Títulos e Info de Usuario --- */
+h2 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.user-info {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.user-role {
+    display: inline-block;
+    background: #ebf0f5;
+    color: #2c3e50;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* --- Panel de Gestión (BOTONES) --- */
+.panel-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.panel-links li {
+    margin-bottom: 12px;
+}
+
+.panel-links a {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 10px;
+    border: 1px solid #eef2f6;
+    transition: all 0.2s ease;
+}
+
+.panel-links a:hover {
+    background: #2c3e50;
+    color: white;
+    transform: translateX(8px);
+}
+
+.panel-links .icon {
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+.panel-links .text {
+    font-weight: 600;
+}
+
+/* --- Tabla de Noticias --- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #2c3e50;
+    color: #2c3e50;
+}
+
+.data-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.text-center { text-align: center; }
+
+.acciones-iconos a {
+    text-decoration: none;
+    margin: 0 8px;
+    font-size: 18px;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.acciones-iconos a:hover { transform: scale(1.3); }
+
+/* --- Buscador y Botones --- */
+.search-container {
+    display: flex;
+    gap: 10px;
+}
+
+.search-container input, .search-container select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.search-container input { flex-grow: 1; }
+
+.btn-new {
+    color: #27ae60;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.logout-box {
+    margin-top: 35px;
+    text-align: center;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.logout-box a {
+    color: #e74c3c;
+    text-decoration: none;
+    font-weight: bold;
+}

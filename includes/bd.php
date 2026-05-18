@@ -1,11 +1,11 @@
 <?php
-
 function conectarBD() {
-    $host = "p3-db";
-    $user = "usuario_p3"; 
-    $pass = "root";       
-    $db   = "p3_sibw"; 
+    $host = "db";        // Nombre del servicio en el docker-compose
+    $user = "user_p4";   // El que pusiste en MYSQL_USER
+    $pass = "root";      // El que pusiste en MYSQL_PASSWORD
+    $db   = "sibw_p4";   // El que pusiste en MYSQL_DATABASE
 
+    // Usamos el constructor con control de errores
     $conexion = new mysqli($host, $user, $pass, $db);
 
     if ($conexion->connect_error) {

@@ -1,0 +1,93 @@
+{% extends "portada.twig" %}
+
+{% block contenido_principal %}
+<style>
+    .form-container { max-width: 1000px; margin: 20px auto; font-family: sans-serif; }
+    .form-section { background: #fdfdfd; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    .grid-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+    .full-width { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    label { font-weight: bold; display: block; margin-bottom: 5px; color: #444; }
+    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+    .img-card { border: 1px solid #eee; text-align: center; background: white; padding: 10px; border-radius: 5px; }
+    .img-card.main { border: 2px solid #ffc107; }
+    .btn-save { background: #28a745; color: white; padding: 15px 40px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+</style>
+
+<div class="form-container">
+    <form action="gestion_noticia.php" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{{ noticia.id }}">
+
+        <div class="form-section">
+            <h3>Datos Generales de la Noticia</h3>
+            
+            <label>Título</label>
+            <input type="text" name="titulo" value="{{ noticia.titulo }}" class="full-width" required>
+
+            <div class="grid-fields" style="margin-top:15px;">
+                <div>
+                    <label>Fecha y Hora</label>
+                    <input type="datetime-local" name="fecha" value="{{ noticia.fecha|date('Y-m-d\\TH:i') }}" class="full-width">
+                </div>
+                <div>
+                    <label>Tipo</label>
+                    <input type="text" name="tipo" value="{{ noticia.tipo }}" class="full-width">
+                </div>
+                <div>
+                    <label>Gravedad</label>
+                    <select name="gravedad" class="full-width">
+                        <option value="Leve" {{ noticia.gravedad == 'Leve' ? 'selected' : '' }}>Leve</option>
+                        <option value="Normal" {{ noticia.gravedad == 'Normal' ? 'selected' : '' }}>Normal</option>
+                        <option value="Grave" {{ noticia.gravedad == 'Grave' ? 'selected' : '' }}>Grave</option>
+                        <option value="Crítico" {{ noticia.gravedad == 'Crítico' ? 'selected' : '' }}>Crítico</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-fields">
+                <div>
+                    <label>Concejalía</label>
+                    <input type="text" name="concejalia" value="{{ noticia.concejalia }}" class="full-width">
+                </div>
+                <div>
+                    <label>ID Lugar</label>
+                    <input type="number" name="lugar_id" value="{{ noticia.lugar_id }}" class="full-width">
+                </div>
+                <div>
+                    <label>Hashtags (separados por coma)</label>
+                    <input type="text" name="hashtags" value="{{ noticia.hashtags }}" class="full-width">
+                </div>
+            </div>
+
+            <label>Personas Involucradas</label>
+            <input type="text" name="personas" value="{{ noticia.personas }}" class="full-width" style="margin-bottom:15px;">
+
+            <label>Descripción detallada</label>
+            <textarea name="descripcion" rows="10" class="full-width">{{ noticia.descripcion }}</textarea>
+        </div>
+
+        <div class="form-section">
+            <h3>Gestión de Galería</h3>
+            <div class="img-grid">
+                {% for img in imagenes %}
+                <div class="img-card {{ img.principal ? 'main' : '' }}">
+                    <img src="img/{{ img.ruta_archivo }}" style="width:100%; height:120px; object-fit:cover;">
+                    <input type="text" name="desc_imgs[{{ img.id }}]" value="{{ img.descripcion_alt }}" placeholder="Texto ALT" style="width:90%; margin:5px 0;">
+                    <div style="display:flex; justify-content:space-around;">
+                        <a href="gestion_noticia.php?id={{ noticia.id }}&hacer_principal={{ img.id }}" title="Hacer Portada">⭐</a>
+                        <a href="gestion_noticia.php?id={{ noticia.id }}&borrar_img={{ img.id }}" onclick="return confirm('¿Borrar?')" title="Borrar">🗑️</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top:20px;">
+                <label>Subir nuevas fotos:</label>
+                <input type="file" name="fotos[]" multiple>
+            </div>
+        </div>
+
+        <div style="text-align:right;">
+            <button type="submit" class="btn-save">Guardar Todos los Cambios</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

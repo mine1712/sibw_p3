@@ -1,7 +1,7 @@
 services:
   server:
     image: php:8.2-apache
-    container_name: p3-server
+    container_name: p4-server  # CAMBIADO
     ports:
       - "8080:80"
     volumes:
@@ -10,19 +10,19 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: p3-db
+    container_name: p4-db      # CAMBIADO
     environment:
-      MYSQL_ROOT_PASSWORD: root        # Usuario: root
-      MYSQL_DATABASE: p3_sibw          # Nombre de la BD
-      MYSQL_USER: usuario_p3           # Segundo usuario
-      MYSQL_PASSWORD: root             # Contraseña del segundo usuario
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sibw_p4   # CAMBIADO (Nombre de la nueva BD)
+      MYSQL_USER: user_p4       # Tu usuario
+      MYSQL_PASSWORD: root
     volumes:
       - ./mysql_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
 
   phpmyadmin:
     image: phpmyadmin
-    container_name: p3-phpmyadmin
+    container_name: p4-phpmyadmin # CAMBIADO
     ports:
       - "8001:80"
     environment:
