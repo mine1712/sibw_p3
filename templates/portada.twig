@@ -43,13 +43,18 @@
                 {# --- PANEL GENERAL (Noticias/Dashboard) --- #}
                 <li><a href="acceso.php">Panel de Gestión</a></li>
 
-                {# --- GESTIÓN DE NOTICIAS (Solo Gestores y Superusuarios) --- #}
-                {% if session.rol == 'gestor' or session.rol == 'superusuario' %}
-                    <li><a href="acceso.php?vista=noticias">Gestión Noticias</a></li>
+                {# --- GESTIÓN DE NOTICIAS (Solo Gestores y Administradores) --- #}
+                {% if session.rol == 'gestor' or session.rol == 'administrador' %}
+                    <li><a href="gestion_noticia.php">Gestión Noticias</a></li>
                 {% endif %}
 
-                {# --- GESTIÓN DE USUARIOS (Solo Superusuarios) --- #}
-                {% if session.rol == 'superusuario' %}
+                {# --- MODERACIÓN DE COMENTARIOS (Solo Moderadores y Administradores) --- #}
+                {% if session.rol == 'moderador' or session.rol == 'administrador' %}
+                    <li><a href="gestion_comentarios.php">Moderar Comentarios</a></li>
+                {% endif %}
+
+                {# --- GESTIÓN DE USUARIOS (Solo Administradores) --- #}
+                {% if session.rol == 'administrador' %}
                     <li><a href="gestion_usuarios.php">Gestión Usuarios</a></li>
                 {% endif %}
 
@@ -63,7 +68,7 @@
     </aside>
 
     {% block contenido_principal %}
-        <main class="contenedor-noticias">
+        <main class="contenedor-noticias" id="noticias-container">
             {% for n in noticias %}
                 <article class="noticia">
                     <a href="noticia.php?id={{ n.id }}" style="text-decoration:none;">
@@ -84,10 +89,12 @@
             <div class="aviso-legal">Aviso legal</div>
         </div>
         <div class="footer-abajo">
-            <p>&copy; Copyright 2026 - {{ session.user|default('Minerva Cebrián') }}</p>
+            <p>&copy; Copyright 2026 </p>
         </div>
     </footer>
 
-    {% block scripts %}{% endblock %}
+    
+   {% block scripts %}{% endblock %}
+
 </body>
 </html>

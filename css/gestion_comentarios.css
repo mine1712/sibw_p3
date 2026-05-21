@@ -1,0 +1,149 @@
+/* Bloques de inserción y edición de comentarios */
+.card-comentario-accion {
+    background: #fdfdfd; 
+    padding: 20px; 
+    border-radius: 8px; 
+    margin-bottom: 30px; 
+    border: 1px solid #e1e8ed; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.card-comentario-accion h3 {
+    margin-top: 0; 
+    color: #2c3e50;
+}
+
+.card-comentario-edicion {
+    background: #f4f4f4; 
+    padding: 20px; 
+    border-radius: 8px; 
+    margin-bottom: 30px; 
+    border: 1px solid #ddd;
+}
+
+/* Elementos de formulario */
+.form-group-comentario {
+    margin-bottom: 15px;
+}
+
+.form-group-comentario label {
+    display: block; 
+    font-weight: bold; 
+    margin-bottom: 5px;
+}
+
+.form-group-comentario select,
+.form-group-comentario input[type="text"],
+.form-group-comentario input[type="email"] {
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-group-comentario textarea {
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.form-row-flex {
+    display: flex; 
+    gap: 15px; 
+    margin-bottom: 15px;
+}
+
+.form-row-flex .flex-item {
+    flex: 1;
+}
+
+/* Botonera y controles */
+.btn-insertar-comentario {
+    background: #27ae60; 
+    color: white; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: bold;
+}
+
+.btn-guardar-comentario {
+    background: #2c3e50; 
+    color: white; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer;
+}
+
+.btn-cancelar-comentario {
+    margin-left: 10px; 
+    color: #666;
+    text-decoration: none;
+}
+
+/* Buscador asíncrono */
+.search-box-comentarios {
+    margin-bottom: 20px;
+}
+
+.search-box-comentarios input {
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    border-radius: 6px; 
+    box-sizing: border-box; 
+    outline: none; 
+    font-size: 15px;
+}
+
+/* Estilos de tabla de moderación */
+.table-comentarios {
+    width: 100%; 
+    border-collapse: collapse;
+}
+
+.table-comentarios thead tr {
+    background: #eee;
+}
+
+.table-comentarios th {
+    padding: 10px; 
+    text-align: left;
+}
+
+.table-comentarios th.text-center-th {
+    text-align: center;
+}
+
+.table-comentarios tr.row-comentario {
+    border-bottom: 1px solid #eee;
+}
+
+.table-comentarios td {
+    padding: 10px;
+}
+
+.table-comentarios td.text-center-td {
+    text-align: center;
+}
+
+/* Detalles de metadatos */
+.user-meta-info small {
+    color: #888;
+}
+
+.user-meta-info .news-origin {
+    font-size: 11px; 
+    color: #aaa;
+}
+
+/* Volver y navegación inferior */
+.footer-navigation-panel {
+    margin-top: 20px;
+}

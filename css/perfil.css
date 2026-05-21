@@ -1,0 +1,86 @@
+/* Contenedor general del panel */
+.panel-usuarios { 
+    max-width: 600px; 
+    margin: auto; 
+    padding: 20px; 
+}
+
+/* Tarjeta contenedora del formulario */
+.card-gestion { 
+    background: #f9f9f9; 
+    padding: 20px; 
+    border-radius: 8px; 
+    border: 1px solid #ddd; 
+}
+
+/* Campos del formulario */
+.campo { 
+    margin-bottom: 15px; 
+}
+
+.campo label { 
+    display: block; 
+    font-weight: bold; 
+    margin-bottom: 5px; 
+}
+
+.campo input { 
+    width: 100%; 
+    padding: 8px; 
+    box-sizing: border-box; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+}
+
+.campo small { 
+    color: #666; 
+    display: block; 
+    margin-top: 5px; 
+}
+
+/* Separador sutil */
+.separador-perfil {
+    margin: 20px 0; 
+    border: 0; 
+    border-top: 1px solid #ddd;
+}
+
+/* Botones y enlaces de acción */
+.btn-guardar { 
+    background: #2c3e50; 
+    color: white; 
+    padding: 10px 15px; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: 4px; 
+    width: 100%; 
+    font-weight: bold; 
+}
+
+.btn-peligro-link { 
+    background: none; 
+    border: none; 
+    color: #e74c3c; 
+    cursor: pointer; 
+    text-decoration: underline; 
+    padding: 0; 
+    display: block; 
+    margin: auto; 
+}
+
+/* Mensajes de éxito */
+.alerta-exito { 
+    background: #d4edda; 
+    color: #155724; 
+    padding: 15px; 
+    border-radius: 4px; 
+    margin-bottom: 20px; 
+    border: 1px solid #c3e6cb; 
+    text-align: center; 
+}
+
+/* Contenedor de cierre de sesión */
+.logout-link { 
+    text-align: center; 
+    margin-top: 20px; 
+}

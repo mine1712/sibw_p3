@@ -73,47 +73,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // --- ACCIÓN: AUTO-ELIMINACIÓN DE CUENTA ---
     if (isset($_POST['accion']) && $_POST['accion'] === 'auto_eliminar') {
-        $stmt = $mysqli->prepare("DELETE FROM usuarios WHERE id = ?");
-        $stmt->bind_param("i", $id_propio);
-        
-        if ($stmt->execute()) {
-            // Si se borra, eliminamos también la cookie de larga duración
-            if (isset($_COOKIE['usuario_recuerdame'])) {
-                setcookie("usuario_recuerdame", "", time() - 3600, "/");
+        // Regla del último administrador: no puede quedarse el sistema sin ningún administrador
+        $puede_eliminar = true;
+        if ($_SESSION['rol'] === 'administrador') {
+            $res_count = $mysqli->query("SELECT COUNT(*) as total FROM usuarios WHERE rol = 'administrador'");
+            $count_row = $res_count->fetch_assoc();
+            if ($count_row['total'] <= 1) {
+                $mensaje = "Error: Eres el único administrador del sistema. No puedes darte de baja sin antes asignar a otro usuario como administrador.";
+                $puede_eliminar = false;
             }
-            session_destroy();
-            header("Location: portada.php");
-            exit();
+        }
+
+        if ($puede_eliminar) {
+            $stmt = $mysqli->prepare("DELETE FROM usuarios WHERE id = ?");
+            $stmt->bind_param("i", $id_propio);
+            
+            if ($stmt->execute()) {
+                // Si se borra, eliminamos también la cookie de larga duración
+                if (isset($_COOKIE['usuario_recuerdame'])) {
+                    setcookie("usuario_recuerdame", "", time() - 3600, "/");
+                }
+                session_destroy();
+                header("Location: portada.php");
+                exit();
+            }
         }
     }
 
-    // --- ACCIÓN: CAMBIAR ROL DE UN USUARIO (Solo Superusuario) ---
-    if ($_SESSION['rol'] === 'superusuario' && isset($_POST['nuevo_rol'], $_POST['id_usuario'])) {
+    // --- ACCIÓN: CAMBIAR ROL DE UN USUARIO (Solo Administrador) ---
+    if ($_SESSION['rol'] === 'administrador' && isset($_POST['nuevo_rol'], $_POST['id_usuario'])) {
         $id_cambiar = (int)$_POST['id_usuario'];
         $nuevo_rol = $_POST['nuevo_rol'];
         
         if ($id_cambiar !== $id_propio) {
-            $stmt = $mysqli->prepare("UPDATE usuarios SET rol = ? WHERE id = ?");
-            $stmt->bind_param("si", $nuevo_rol, $id_cambiar);
-            $stmt->execute();
-            $mensaje = "Rol de usuario modificado con éxito.";
+            // Regla del último administrador
+            $stmt_check = $mysqli->prepare("SELECT rol FROM usuarios WHERE id = ?");
+            $stmt_check->bind_param("i", $id_cambiar);
+            $stmt_check->execute();
+            $user_check = $stmt_check->get_result()->fetch_assoc();
+            $stmt_check->close();
+
+            $puede_cambiar = true;
+            if ($user_check && $user_check['rol'] === 'administrador' && $nuevo_rol !== 'administrador') {
+                $res_count = $mysqli->query("SELECT COUNT(*) as total FROM usuarios WHERE rol = 'administrador'");
+                $count_row = $res_count->fetch_assoc();
+                if ($count_row['total'] <= 1) {
+                    $mensaje = "Error: No se puede cambiar el rol del único administrador del sistema.";
+                    $puede_cambiar = false;
+                }
+            }
+
+            if ($puede_cambiar) {
+                $stmt = $mysqli->prepare("UPDATE usuarios SET rol = ? WHERE id = ?");
+                $stmt->bind_param("si", $nuevo_rol, $id_cambiar);
+                $stmt->execute();
+                $mensaje = "Rol de usuario modificado con éxito.";
+            }
         }
     }
 
-    // --- ACCIÓN: ELIMINAR USUARIO (Solo Superusuario) ---
-    if ($_SESSION['rol'] === 'superusuario' && isset($_POST['accion']) && $_POST['accion'] === 'borrar_usuario') {
+    // --- ACCIÓN: ELIMINAR USUARIO (Solo Administrador) ---
+    if ($_SESSION['rol'] === 'administrador' && isset($_POST['accion']) && $_POST['accion'] === 'borrar_usuario') {
         $id_borrar = (int)$_POST['id_usuario'];
         
         if ($id_borrar !== $id_propio) {
-            $stmt = $mysqli->prepare("DELETE FROM usuarios WHERE id = ?");
-            $stmt->bind_param("i", $id_borrar);
-            $stmt->execute();
-            $mensaje = "El usuario ha sido eliminado del sistema de forma permanente.";
+            // Regla del último administrador
+            $stmt_check = $mysqli->prepare("SELECT rol FROM usuarios WHERE id = ?");
+            $stmt_check->bind_param("i", $id_borrar);
+            $stmt_check->execute();
+            $user_check = $stmt_check->get_result()->fetch_assoc();
+            $stmt_check->close();
+
+            $puede_borrar = true;
+            if ($user_check && $user_check['rol'] === 'administrador') {
+                $res_count = $mysqli->query("SELECT COUNT(*) as total FROM usuarios WHERE rol = 'administrador'");
+                $count_row = $res_count->fetch_assoc();
+                if ($count_row['total'] <= 1) {
+                    $mensaje = "Error: No se puede eliminar al único administrador del sistema.";
+                    $puede_borrar = false;
+                }
+            }
+
+            if ($puede_borrar) {
+                $stmt = $mysqli->prepare("DELETE FROM usuarios WHERE id = ?");
+                $stmt->bind_param("i", $id_borrar);
+                $stmt->execute();
+                $mensaje = "El usuario ha sido eliminado del sistema de forma permanente.";
+            }
         }
     }
     
-    // --- ACCIÓN: BORRAR NOTICIA (Gestores y Superusuarios) ---
-    if (in_array($_SESSION['rol'], ['gestor', 'superusuario']) && isset($_POST['accion']) && $_POST['accion'] === 'borrar_noticia') {
+    // --- ACCIÓN: BORRAR NOTICIA (Gestores y Administradores) ---
+    if (in_array($_SESSION['rol'], ['gestor', 'administrador']) && isset($_POST['accion']) && $_POST['accion'] === 'borrar_noticia') {
         $id_noticia = (int)$_POST['id_noticia'];
         $stmt = $mysqli->prepare("DELETE FROM noticia WHERE id = ?");
         $stmt->bind_param("i", $id_noticia);
@@ -136,40 +187,13 @@ if ($user_data_row = $resultado_user->fetch_assoc()) {
     $user_data = $user_data_row;
 }
 
-// B. Listado y filtrado de noticias (Solo Gestor / Superusuario)
-$busqueda = $_GET['q'] ?? '';
-$noticias = [];
-
-if (in_array($_SESSION['rol'], ['gestor', 'superusuario'])) {
-    if (!empty($busqueda)) {
-        $stmt_not = $mysqli->prepare("SELECT id, titulo, fecha FROM noticia WHERE titulo LIKE ? OR descripcion LIKE ? ORDER BY fecha DESC");
-        $like_str = "%" . $busqueda . "%";
-        $stmt_not->bind_param("ss", $like_str, $like_str);
-        $stmt_not->execute();
-        $noticias = $stmt_not->get_result()->fetch_all(MYSQLI_ASSOC);
-    } else {
-        $res_not = $mysqli->query("SELECT id, titulo, fecha FROM noticia ORDER BY fecha DESC");
-        $noticias = $res_not->fetch_all(MYSQLI_ASSOC);
-    }
-}
-
-// C. Lista de todos los usuarios (Solo Superusuario)
-$listaUsuarios = [];
-if ($_SESSION['rol'] === 'superusuario') {
-    $res_users = $mysqli->query("SELECT id, email, rol FROM usuarios ORDER BY id ASC");
-    $listaUsuarios = $res_users->fetch_all(MYSQLI_ASSOC);
-}
 
 // ==========================================
 // 6. ENVIAR TODO A TWIG
 // ==========================================
-// Recuerda cambiar 'perfil.twig' por el nombre real de tu archivo de plantilla
 echo $twig->render('perfil.twig', [
     'session'           => $_SESSION,
     'mensaje'           => $mensaje,
     'user_data'         => $user_data,
-    'q'                 => $busqueda,
-    'noticias'          => $noticias,
-    'usuarios'          => $listaUsuarios,
-    'roles_disponibles' => ['anonimo', 'usuario', 'moderador', 'gestor', 'superusuario']
+    'roles_disponibles' => ['anonimo', 'usuario', 'moderador', 'gestor', 'administrador']
 ]);

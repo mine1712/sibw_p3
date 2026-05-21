@@ -1,24 +1,203 @@
-.gestion-container { padding: 40px 20px; max-width: 1000px; margin: auto; }
-.form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.1); }
-.form-row { display: flex; gap: 20px; }
-.form-group { margin-bottom: 20px; flex: 1; }
-.form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+/* Contenedor general */
+.form-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    font-family: sans-serif;
+}
 
-.image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin: 20px 0; }
-.image-item { border: 1px solid #eee; padding: 10px; border-radius: 8px; background: #fcfcfc; }
-.image-item.is-main { border: 2px solid #3498db; background: #f0f7ff; }
+/* Secciones y contenedores del formulario */
+.form-section {
+    background: #fdfdfd;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
 
-.img-wrap { position: relative; height: 140px; }
-.img-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
-.badge { position: absolute; top: 5px; right: 5px; background: #3498db; color: white; font-size: 10px; padding: 3px 6px; border-radius: 3px; }
+/* Estado de edición activa (destaca el formulario) */
+.editing-mode {
+    border: 2px solid #007bff;
+    background: #f4f8ff;
+}
 
-.img-fields input { width: 100%; margin-top: 10px; font-size: 13px; padding: 6px; }
-.img-btns { display: flex; gap: 8px; margin-top: 10px; }
-.btn-fav, .btn-del { flex: 1; text-align: center; padding: 8px; text-decoration: none; border-radius: 4px; color: white; }
-.btn-fav { background: #f1c40f; color: #333; }
-.btn-del { background: #e74c3c; }
+/* Tipografías y etiquetas */
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #444;
+}
 
-.upload-zone { border: 2px dashed #ccc; padding: 20px; text-align: center; margin-top: 20px; }
-.form-actions { margin-top: 40px; display: flex; gap: 15px; }
-.btn-save { background: #27ae60; color: white; border: none; padding: 15px 30px; border-radius: 6px; cursor: pointer; font-size: 16px; }
-.btn-cancel { background: #eee; color: #555; text-decoration: none; padding: 15px 30px; border-radius: 6px; }
+/* Grillas y distribución de campos */
+.grid-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.grid-fields-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.full-width {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Espaciados específicos */
+.mt-15 { margin-top: 15px; }
+.mt-20 { margin-top: 20px; }
+.mb-15 { margin-bottom: 15px; }
+
+/* Buscador */
+.search-box {
+    display: flex;
+    gap: 10px;
+    background: #eef2f5;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.search-box select, 
+.search-box input {
+    padding: 8px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+}
+
+.search-box input {
+    flex-grow: 1;
+}
+
+.search-box button {
+    background: #0066cc;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-clear-link {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 10px;
+}
+
+/* Tabla de datos */
+.table-noticias {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+}
+
+.table-noticias th, 
+.table-noticias td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.table-noticias th {
+    background-color: #f2f2f2;
+}
+
+/* Fila activa resaltada en la tabla */
+.active-row {
+    background-color: #e6f0fa;
+}
+
+.no-results {
+    color: #777;
+    font-style: italic;
+}
+
+/* Botones y acciones */
+.action-btn {
+    display: inline-block;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 3px;
+    color: white;
+    font-size: 0.9em;
+}
+
+.btn-edit { background: #007bff; }
+.btn-delete { background: #dc3545; }
+
+.btn-save {
+    background: #28a745;
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-cancel {
+    margin-right: 15px;
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.actions-container {
+    text-align: right;
+}
+
+/* Caja informativa de Hashtags */
+.hashtags-info-box {
+    background: #f0f4f8;
+    border-left: 4px solid #0066cc;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* Grid de Imágenes de la Galería */
+.img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.img-card {
+    border: 1px solid #eee;
+    text-align: center;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.img-card.main {
+    border: 2px solid #ffc107;
+}
+
+.img-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.img-card input {
+    width: 90%;
+    margin: 5px 0;
+}
+
+.img-card-actions {
+    display: flex;
+    justify-content: space-around;
+}

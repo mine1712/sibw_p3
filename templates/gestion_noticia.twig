@@ -1,32 +1,75 @@
 {% extends "portada.twig" %}
 
 {% block contenido_principal %}
-<style>
-    .form-container { max-width: 1000px; margin: 20px auto; font-family: sans-serif; }
-    .form-section { background: #fdfdfd; border: 1px solid #ddd; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-    .grid-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-    .full-width { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-    label { font-weight: bold; display: block; margin-bottom: 5px; color: #444; }
-    .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-    .img-card { border: 1px solid #eee; text-align: center; background: white; padding: 10px; border-radius: 5px; }
-    .img-card.main { border: 2px solid #ffc107; }
-    .btn-save { background: #28a745; color: white; padding: 15px 40px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-</style>
+<!-- Vinculamos el archivo CSS externo que acabamos de crear -->
+<link rel="stylesheet" href="css/gestion_noticia.css">
 
 <div class="form-container">
-    <form action="gestion_noticia.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="{{ noticia.id }}">
 
-        <div class="form-section">
-            <h3>Datos Generales de la Noticia</h3>
-            
+    {# ================= BLOQUE 1: BUSCADOR (ARRIBA DEL TODO) ================= #}
+    <div class="form-section">
+        <h3>Filtro de Búsqueda</h3>
+        <form action="gestion_noticia.php" method="GET" class="search-box">
+            <select name="campo">
+                <option value="titulo" {{ campo == 'titulo' ? 'selected' : '' }}>Título</option>
+                <option value="descripcion" {{ campo == 'descripcion' ? 'selected' : '' }}>Descripción</option>
+                <option value="hashtag" {{ campo == 'hashtag' ? 'selected' : '' }}>Hashtag</option>
+            </select>
+            <input type="text" name="q" value="{{ busqueda }}" placeholder="Escribe tu término de búsqueda...">
+            <button type="submit">Filtrar</button>
+            {% if busqueda %}
+                <a href="gestion_noticia.php" class="search-clear-link">Mostrar todas</a>
+            {% endif %}
+        </form>
+    </div>
+
+    {# ================= BLOQUE 2: RESULTADOS Y LISTADO GENERAL ================= #}
+    <div class="form-section">
+        <h3>Listado de Incidencias Disponibles</h3>
+        {% if noticias is not empty %}
+            <table class="table-noticias">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for n in noticias %}
+                    <tr class="{{ noticia.id == n.id ? 'active-row' : '' }}">
+                        <td>{{ n.id }}</td>
+                        <td><strong>{{ n.titulo }}</strong></td>
+                        <td>{{ n.fecha|date('d/m/Y H:i') }}</td>
+                        <td>
+                            <a href="gestion_noticia.php?id={{ n.id }}#formulario" class="action-btn btn-edit"> Editar</a>
+                            <a href="gestion_noticia.php?accion=borrar&id={{ n.id }}" class="action-btn btn-delete" onclick="return confirm('¿Eliminar por completo esta incidencia?')"> Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-results">No hay ninguna noticia que coincida con la búsqueda.</p>
+        {% endif %}
+    </div>
+
+    {# ================= BLOQUE 3: FORMULARIO PRINCIPAL (ABAJO DEL TODO) ================= #}
+    <div id="formulario" class="form-section {{ noticia.id ? 'editing-mode' : '' }}">
+        <h3>{{ noticia.id ? 'Modificando Noticia (ID: ' ~ noticia.id ~ ')' : ' Añadir Nueva Noticia al Sistema' }}</h3>
+        
+        <form action="gestion_noticia.php" method="POST">
+            <input type="hidden" name="id" value="{{ noticia.id }}">
+
+            {# --- DATOS GENERALES --- #}
             <label>Título</label>
             <input type="text" name="titulo" value="{{ noticia.titulo }}" class="full-width" required>
 
-            <div class="grid-fields" style="margin-top:15px;">
+            <div class="grid-fields-3 mt-15">
                 <div>
                     <label>Fecha y Hora</label>
-                    <input type="datetime-local" name="fecha" value="{{ noticia.fecha|date('Y-m-d\\TH:i') }}" class="full-width">
+                    <input type="datetime-local" name="fecha" value="{{ noticia.fecha ? noticia.fecha|date('Y-m-d\\TH:i') : '' }}" class="full-width">
                 </div>
                 <div>
                     <label>Tipo</label>
@@ -52,42 +95,58 @@
                     <label>ID Lugar</label>
                     <input type="number" name="lugar_id" value="{{ noticia.lugar_id }}" class="full-width">
                 </div>
-                <div>
-                    <label>Hashtags (separados por coma)</label>
-                    <input type="text" name="hashtags" value="{{ noticia.hashtags }}" class="full-width">
-                </div>
             </div>
 
             <label>Personas Involucradas</label>
-            <input type="text" name="personas" value="{{ noticia.personas }}" class="full-width" style="margin-bottom:15px;">
+            <input type="text" name="personas" value="{{ noticia.personas }}" class="full-width mb-15">
 
-            <label>Descripción detallada</label>
+            <label>Descripción</label>
             <textarea name="descripcion" rows="10" class="full-width">{{ noticia.descripcion }}</textarea>
-        </div>
 
-        <div class="form-section">
-            <h3>Gestión de Galería</h3>
-            <div class="img-grid">
-                {% for img in imagenes %}
-                <div class="img-card {{ img.principal ? 'main' : '' }}">
-                    <img src="img/{{ img.ruta_archivo }}" style="width:100%; height:120px; object-fit:cover;">
-                    <input type="text" name="desc_imgs[{{ img.id }}]" value="{{ img.descripcion_alt }}" placeholder="Texto ALT" style="width:90%; margin:5px 0;">
-                    <div style="display:flex; justify-content:space-around;">
-                        <a href="gestion_noticia.php?id={{ noticia.id }}&hacer_principal={{ img.id }}" title="Hacer Portada">⭐</a>
-                        <a href="gestion_noticia.php?id={{ noticia.id }}&borrar_img={{ img.id }}" onclick="return confirm('¿Borrar?')" title="Borrar">🗑️</a>
-                    </div>
+            {# --- GESTIÓN DE HASHTAGS --- #}
+            <div class="mt-20">
+                <h3>Hashtags de la Noticia</h3>
+                <div class="hashtags-info-box">
+                    Escribe las etiquetas asociadas a esta noticia separadas por comas (por ejemplo: <i>incendios, vandalismo, bomberos</i>).
                 </div>
-                {% endfor %}
+                <label for="hashtags-input">Etiquetas (Tags)</label>
+                <input type="text" id="hashtags-input" name="hashtags" value="{{ noticia.hashtags }}" class="full-width" placeholder="ejemplo1, ejemplo2, ejemplo3">
             </div>
-            <div style="margin-top:20px;">
-                <label>Subir nuevas fotos:</label>
-                <input type="file" name="fotos[]" multiple>
-            </div>
-        </div>
 
-        <div style="text-align:right;">
-            <button type="submit" class="btn-save">Guardar Todos los Cambios</button>
-        </div>
-    </form>
+            {# --- GALERÍA DE IMÁGENES --- #}
+            <div class="mt-20">
+                <h3>Gestión de Galería</h3>
+                {% if imagenes is not empty %}
+                    <div class="img-grid">
+                        {% for img in imagenes %}
+                        <div class="img-card {{ img.principal ? 'main' : '' }}">
+                            <img src="img/{{ img.ruta_archivo }}">
+                            <input type="text" name="desc_imgs[{{ img.id }}]" value="{{ img.descripcion_alt }}" placeholder="Texto ALT">
+                            <div class="img-card-actions">
+                                <a href="gestion_noticia.php?id={{ noticia.id }}&hacer_principal={{ img.id }}#formulario" title="Hacer Portada">⭐</a>
+                                <a href="gestion_noticia.php?id={{ noticia.id }}&borrar_img={{ img.id }}#formulario" onclick="return confirm('¿Borrar esta imagen?')" title="Borrar">🗑️</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="mt-20">
+                    <label for="nueva-imagen">Asociar archivo de imagen local (Nombre o ruta):</label>
+                    <input type="text" id="nueva-imagen" name="nueva_imagen_ruta" class="full-width" placeholder="ejemplo: noticia_1_1.png">
+                </div>
+            </div>
+
+            <div class="actions-container mt-20">
+                {% if noticia.id %}
+                    <a href="gestion_noticia.php" class="btn-cancel" Cancelar Edición</a>
+                {% endif %}
+                <button type="submit" class="btn-save">
+                    {{ noticia.id ? 'Actualizar Registro' : 'Crear Noticia' }}
+                </button>
+            </div>
+        </form>
+    </div>
+
 </div>
 {% endblock %}

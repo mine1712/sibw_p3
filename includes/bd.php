@@ -13,5 +13,12 @@ function conectarBD() {
     }
 
     $conexion->set_charset("utf8mb4");
+
+    // Verificación dinámica de la columna hashtags en la tabla noticia
+    $check = $conexion->query("SHOW COLUMNS FROM noticia LIKE 'hashtags'");
+    if ($check && $check->num_rows == 0) {
+        $conexion->query("ALTER TABLE noticia ADD COLUMN hashtags VARCHAR(255) DEFAULT NULL");
+    }
+
     return $conexion;
 }

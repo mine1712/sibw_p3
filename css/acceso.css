@@ -1,148 +1,143 @@
-/* --- Contenedor Principal --- */
+/* Estructura principal */
 .auth-wrapper {
-    min-height: 80vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 20px;
+    padding: 40px 20px;
+    min-height: 80vh;
 }
 
 .auth-card {
-    background: white;
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     width: 100%;
-    max-width: 450px;
-    transition: all 0.3s ease;
+    max-width: 400px;
 }
 
 .auth-card.wide {
-    max-width: 950px; /* Se ensancha para la tabla */
+    max-width: 800px;
 }
 
-/* --- Títulos e Info de Usuario --- */
-h2 {
-    color: #2c3e50;
+.auth-card h2 {
+    text-align: center;
     margin-bottom: 25px;
-    text-align: center;
-}
-
-.user-info {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.user-role {
-    display: inline-block;
-    background: #ebf0f5;
     color: #2c3e50;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 10px;
 }
 
-/* --- Panel de Gestión (BOTONES) --- */
+/* Formularios de Login/Registro */
+.panel-links-clean .form-group-left {
+    margin-bottom: 15px;
+}
+
+.panel-links-clean label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.panel-links-clean input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.btn-submit-form {
+    width: 100%;
+    padding: 12px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Panel de menú y navegación */
 .panel-links ul {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 .panel-links li {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .panel-links a {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
+    display: block;
+    padding: 12px;
     background: #f8f9fa;
-    color: #2c3e50;
+    border: 1px solid #eee;
     text-decoration: none;
-    border-radius: 10px;
-    border: 1px solid #eef2f6;
-    transition: all 0.2s ease;
+    color: #333;
+    border-radius: 5px;
+    transition: 0.3s;
 }
 
 .panel-links a:hover {
-    background: #2c3e50;
-    color: white;
-    transform: translateX(8px);
+    background: #e9ecef;
 }
 
-.panel-links .icon {
-    font-size: 20px;
-    margin-right: 15px;
-}
-
-.panel-links .text {
-    font-weight: 600;
-}
-
-/* --- Tabla de Noticias --- */
+/* Tablas de gestión */
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 25px 0;
+    margin-top: 20px;
 }
 
-.data-table th {
-    text-align: left;
-    padding: 12px;
-    border-bottom: 2px solid #2c3e50;
-    color: #2c3e50;
-}
-
-.data-table td {
+.data-table th, .data-table td {
     padding: 12px;
     border-bottom: 1px solid #eee;
+    text-align: left;
 }
 
 .text-center { text-align: center; }
 
 .acciones-iconos a {
     text-decoration: none;
-    margin: 0 8px;
-    font-size: 18px;
-    transition: transform 0.2s;
-    display: inline-block;
+    margin: 0 5px;
+    font-size: 1.2em;
 }
 
-.acciones-iconos a:hover { transform: scale(1.3); }
+.table-empty-row { text-align: center; color: #888; padding: 20px !important; }
 
-/* --- Buscador y Botones --- */
-.search-container {
+/* Buscador de panel */
+.search-container-panel {
     display: flex;
-    gap: 10px;
+    gap: 5px;
+    margin-bottom: 20px;
 }
 
-.search-container input, .search-container select {
-    padding: 10px;
+.search-container-panel input, .search-container-panel select {
+    padding: 8px;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
-.search-container input { flex-grow: 1; }
-
-.btn-new {
-    color: #27ae60;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-.logout-box {
-    margin-top: 35px;
+/* Footer y utilidades */
+.logout-box, .logout-box-bordered {
+    margin-top: 20px;
     text-align: center;
+    font-size: 0.9em;
+}
+
+.logout-box-bordered {
     border-top: 1px solid #eee;
     padding-top: 20px;
 }
 
-.logout-box a {
-    color: #e74c3c;
-    text-decoration: none;
-    font-weight: bold;
+.link-danger { color: #e74c3c; text-decoration: none; }
+.btn-new-record { 
+    display: inline-block; 
+    padding: 10px 15px; 
+    background: #27ae60; 
+    color: white; 
+    text-decoration: none; 
+    border-radius: 4px; 
 }
+.error-message { color: #e74c3c; text-align: center; font-weight: bold; }
+.security-block-alert { background: #fff3f3; padding: 20px; border: 1px solid #ffcaca; color: #a94442; border-radius: 4px; }

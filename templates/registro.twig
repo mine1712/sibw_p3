@@ -1,13 +1,11 @@
 {% extends "portada.twig" %}
 
 {% block contenido_principal %}
-{# Cargamos el CSS de registro que ya tienes #}
 <link rel="stylesheet" href="/css/registro.css">
 
 <main class="auth-wrapper">
     <div class="auth-card">
 
-        {# 1. TÍTULO DINÁMICO #}
         <h2>
             {% if modo == 'login' %}
                 Iniciar Sesión
@@ -16,35 +14,25 @@
             {% endif %}
         </h2>
 
-        {# 2. MENSAJES DE ERROR O ÉXITO #}
         {% if error %}
-            <div class="auth-error" style="color: #e74c3c; margin-bottom: 15px; text-align: center; font-weight: bold;">
-                {{ error }}
-            </div>
+            <div class="auth-error">{{ error }}</div>
         {% endif %}
 
         {% if app.request.get('success') %}
-            <div class="auth-success" style="color: #27ae60; margin-bottom: 15px; text-align: center; font-weight: bold;">
-                ¡Registro completado! Ya puedes entrar.
-            </div>
+            <div class="auth-success">¡Registro completado! Ya puedes entrar.</div>
         {% endif %}
 
-        {# 3. FORMULARIO UNIFICADO #}
-        {# Enviamos siempre a login.php pero manteniendo el modo en la URL #}
         <form method="POST" action="login.php?modo={{ modo }}">
 
-            <div class="form-group" style="margin-bottom: 15px;">
-                <input type="email" name="email" placeholder="Correo electrónico" required 
-                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Correo electrónico" required>
             </div>
 
-            <div class="form-group" style="margin-bottom: 20px;">
-                <input type="password" name="password" placeholder="Contraseña" required 
-                       style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Contraseña" required>
             </div>
 
-            {# BOTÓN DINÁMICO #}
-            <button type="submit" style="width: 100%; padding: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            <button type="submit" class="btn-auth">
                 {% if modo == 'login' %}
                     Entrar
                 {% else %}
@@ -54,16 +42,11 @@
 
         </form>
 
-        {# 4. SWITCH INFERIOR (Para saltar entre Login y Registro) #}
-        <div class="auth-switch" style="margin-top: 20px; text-align: center; font-size: 0.9em;">
+        <div class="auth-switch">
             {% if modo == 'login' %}
-                <p>¿No tienes cuenta? 
-                    <a href="login.php?modo=registro" style="color: #3498db; text-decoration: none; font-weight: bold;">Regístrate aquí</a>
-                </p>
+                <p>¿No tienes cuenta? <a href="login.php?modo=registro">Regístrate aquí</a></p>
             {% else %}
-                <p>¿Ya tienes cuenta? 
-                    <a href="login.php?modo=login" style="color: #3498db; text-decoration: none; font-weight: bold;">Inicia sesión</a>
-                </p>
+                <p>¿Ya tienes cuenta? <a href="login.php?modo=login">Inicia sesión</a></p>
             {% endif %}
         </div>
 

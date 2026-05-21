@@ -4,142 +4,33 @@
 <link rel="stylesheet" href="css/acceso.css"> 
 
 <div class="auth-wrapper">
-    {# Ensanchamos la tarjeta si estamos viendo tablas de gestión (noticias o comentarios) #}
-    <div class="auth-card {{ (vista == 'noticias' or vista == 'comentarios') ? 'wide' : '' }}">
+    <div class="auth-card">
+        <h2>Panel de Control</h2>
         
-        {# --- ESCENARIO A: LOGIN / REGISTRO --- #}
-        {% if modo == 'login' or modo == 'registro' %}
-            
-            <h2>{{ modo == 'login' ? 'Identificación' : 'Registro de Usuario' }}</h2>
-            
-            <form action="{{ modo == 'login' ? 'login.php' : 'registro.php' }}" method="POST">
-                <div class="panel-links" style="border:none; padding:0;">
-                    <div style="margin-bottom: 15px; text-align: left;">
-                        <label>Email:</label>
-                        <input type="email" name="email" required style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ddd;">
-                    </div>
-                    
-                    <div style="margin-bottom: 15px; text-align: left;">
-                        <label>Contraseña:</label>
-                        <input type="password" name="password" required style="width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ddd;">
-                    </div>
+        <p>Bienvenido, <strong>{{ session.user }}</strong></p>
+        <span class="user-role">{{ session.rol }}</span>
 
-                    <button type="submit" style="width:100%; background:#2c3e50; color:white; padding:12px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">
-                        {{ modo == 'login' ? 'Entrar' : 'Crear Cuenta' }}
-                    </button>
-                </div>
-            </form>
-
-            {% if error %}
-                <p style="color: #e74c3c; text-align:center; margin-top:15px; font-weight:bold;">{{ error }}</p>
-            {% endif %}
-
-            <div class="logout-box" style="margin-top:20px;">
-                {% if modo == 'login' %}
-                    <p>¿No tienes cuenta? <a href="registro.php">Regístrate</a></p>
-                {% else %}
-                    <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
+        <div class="panel-links">
+            <ul>
+                {% if session.rol in ['gestor', 'administrador'] %}
+                    <li><a href="gestion_noticia.php">📰 Gestionar Noticias</a></li>
                 {% endif %}
-            </div>
-
-        {# --- ESCENARIO B: PANEL DE GESTIÓN (LOGUEADO) --- #}
-        {% else %}
-            
-            <h2>
-                {% if vista == 'noticias' %}Gestión de Noticias
-                {% elseif vista == 'comentarios' %}Moderación de Comentarios
-                {% else %}Panel de Control{% endif %}
-            </h2>
-
-            {% if vista == 'menu' %}
-                <p>Bienvenido, <strong>{{ session.user }}</strong></p>
-                <span class="user-role">{{ session.rol }}</span>
-
-                <div class="panel-links">
-                    <ul>
-                        {# REQUISITO BLINDADO: Solo Gestores y Superusuarios ven el enlace de noticias #}
-                        {% if session.rol in ['gestor', 'superusuario'] %}
-                            <li><a href="acceso.php?vista=noticias"><span class="icon">📰</span> Gestionar Noticias</a></li>
-                        {% endif %}
-                        
-                        {# Punto B: Enlace de moderación en el menú lateral para moderadores/supers #}
-                        {% if session.rol in ['moderador', 'superusuario'] %}
-                            <li><a href="gestion_comentarios.php"><span class="icon">💬</span> Moderar Comentarios</a></li>
-                        {% endif %}
-                        
-                        {# Visible para todos los usuarios registrados #}
-                        <li><a href="perfil.php"><span class="icon">👤</span> Mi Perfil</a></li>
-                        
-                        {# Exclusivo de Superusuario #}
-                        {% if session.rol == 'superusuario' %}
-                            <li><a href="gestion_usuarios.php"><span class="icon">👥</span> Gestionar Usuarios</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-
-            {% elseif vista == 'noticias' %}
-                {# DOBLE CANDADO DE SEGURIDAD VISTA: Si un usuario intenta forzar la URL directamente #}
-                {% if session.rol in ['gestor', 'superusuario'] %}
-                    
-                    {# Buscador de noticias #}
-                    <form method="GET" action="acceso.php" class="search-container" style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;">
-                        <input type="hidden" name="vista" value="noticias">
-                        <select name="campo" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
-                            <option value="titulo" {{ campo == 'titulo' ? 'selected' : '' }}>Título</option>
-                            <option value="descripcion" {{ campo == 'descripcion' ? 'selected' : '' }}>Contenido</option>
-                        </select>
-                        <input type="text" name="q" value="{{ busqueda }}" placeholder="Buscar noticia..." style="flex-grow: 1; padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
-                        <button type="submit" style="padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer;">🔍</button>
-                    </form>
-
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Título</th>
-                                <th class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for n in noticias %}
-                            <tr>
-                                <td>{{ n.fecha|date("d/m/Y") }}</td>
-                                <td>{{ n.titulo }}</td>
-                                <td class="text-center acciones-iconos">
-                                    <a href="gestion_noticia.php?id={{ n.id }}" title="Editar noticia">✏️</a>
-                                    <a href="acceso.php?accion=borrar&id={{ n.id }}" onclick="return confirm('¿Seguro que quieres borrar esta noticia y todas sus fotos?')" title="Eliminar noticia">🗑️</a>
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="3" style="text-align: center; padding: 20px; color: #777;">No se han encontrado noticias.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    
-                    <p style="margin-top: 20px;">
-                        <a href="gestion_noticia.php" class="btn-new" style="display: inline-block; padding: 10px 20px; background: #27ae60; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">+ Añadir Nueva Noticia</a>
-                    </p>
-
-                {% else %}
-                    {# Si un rol no autorizado intenta entrar a las noticias, le mostramos el bloqueo #}
-                    <div style="text-align: center; padding: 30px; color: #e74c3c;">
-                        <p><strong>Error:</strong> No dispones de los permisos necesarios para gestionar noticias.</p>
-                        <a href="acceso.php" style="color: #2c3e50; text-decoration: underline;">Volver al menú</a>
-                    </div>
+                
+                {% if session.rol in ['moderador', 'administrador'] %}
+                    <li><a href="gestion_comentarios.php">💬 Moderar Comentarios</a></li>
                 {% endif %}
-            {% endif %}
-
-            <div class="logout-box" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee;">
-                {% if vista != 'menu' %}
-                    <a href="acceso.php">⬅ Volver al Menú</a> | 
+                
+                <li><a href="perfil.php">👤 Mi Perfil</a></li>
+                
+                {% if session.rol == 'administrador' %}
+                    <li><a href="gestion_usuarios.php">👥 Gestionar Usuarios</a></li>
                 {% endif %}
-                <a href="logout.php" style="color:#e74c3c; font-weight:bold;">Cerrar Sesión</a>
-            </div>
+            </ul>
+        </div>
 
-        {% endif %}
-
+        <div class="logout-box-bordered">
+            <a href="logout.php" class="link-danger">Cerrar Sesión</a>
+        </div>
     </div>
 </div>
 {% endblock %}

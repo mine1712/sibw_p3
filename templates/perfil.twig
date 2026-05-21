@@ -1,6 +1,8 @@
 {% extends "portada.twig" %}
 
 {% block contenido_principal %}
+<link rel="stylesheet" href="css/perfil.css">
+
 <div class="panel-usuarios">
     <h2>Mi Panel de Control</h2>
 
@@ -11,7 +13,7 @@
     <div class="contenedor-perfil-unico">
         {# --- EDICIÓN DE DATOS PERSONALES --- #}
         <section class="card-gestion">
-            <h3>👤 Mis Datos Personales</h3>
+            <h3> Mis Datos Personales</h3>
             <form action="perfil.php" method="POST" class="form-perfil">
                 <input type="hidden" name="accion" value="actualizar_perfil">
                 
@@ -29,9 +31,9 @@
                 <button type="submit" class="btn-guardar">Actualizar Perfil</button>
             </form>
 
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+            <hr class="separador-perfil">
 
-            {# --- AUTOBIDE / DARSE DE BAJA --- #}
+            {# DARSE DE BAJA --- #}
             <form action="perfil.php" method="POST" onsubmit="return confirm('¿Estás seguro? Esta acción es irreversible.')">
                 <input type="hidden" name="accion" value="auto_eliminar">
                 <button type="submit" class="btn-peligro-link">Darse de baja del sistema</button>
@@ -43,17 +45,4 @@
         <a href="logout.php">Cerrar sesión segura</a>
     </div>
 </div>
-
-<style>
-    .panel-usuarios { max-width: 600px; margin: auto; padding: 20px; }
-    .card-gestion { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
-    .campo { margin-bottom: 15px; }
-    .campo label { display: block; font-weight: bold; margin-bottom: 5px; }
-    .campo input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-    .campo small { color: #666; display: block; margin-top: 5px; }
-    .btn-guardar { background: #2c3e50; color: white; padding: 10px 15px; border: none; cursor: pointer; border-radius: 4px; width: 100%; font-weight: bold; }
-    .btn-peligro-link { background: none; border: none; color: #e74c3c; cursor: pointer; text-decoration: underline; padding: 0; display: block; margin: auto; }
-    .alerta-exito { background: #d4edda; color: #155724; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #c3e6cb; text-align: center; }
-    .logout-link { text-align: center; margin-top: 20px; }
-</style>
 {% endblock %}

@@ -2,46 +2,85 @@
 
 {% block contenido_principal %}
 <link rel="stylesheet" href="css/acceso.css">
+<link rel="stylesheet" href="css/gestion_comentarios.css">
 
 <div class="auth-wrapper">
     <div class="auth-card wide">
         <h2>Moderación de Comentarios</h2>
 
+        {# --- FORMULARIO PARA AÑADIR COMENTARIO DIRECTAMENTE --- #}
+        <div class="card-comentario-accion">
+            <h3>➕ Añadir Comentario </h3>
+            <form action="gestion_comentarios.php" method="POST">
+                <input type="hidden" name="accion" value="insertar">
+                
+                <div class="form-group-comentario">
+                    <label>Noticia Asociada:</label>
+                    <select name="id_noticia" required>
+                        <option value="">-- Seleccionar Noticia --</option>
+                        {% for n in noticias_list %}
+                            <option value="{{ n.id }}">{{ n.titulo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-row-flex">
+                    <div class="flex-item form-group-comentario">
+                        <label>Nombre:</label>
+                        <input type="text" name="nombre" required>
+                    </div>
+                    <div class="flex-item form-group-comentario">
+                        <label>E-mail:</label>
+                        <input type="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-group-comentario">
+                    <label>Comentario:</label>
+                    <textarea name="texto" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-insertar-comentario">Agregar Comentario</button>
+            </form>
+        </div>
+
         {% if comentario_editar %}
-            <div style="background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #ddd;">
+            <div class="card-comentario-edicion">
                 <h3>Editando comentario de: {{ comentario_editar.nombre }}</h3>
                 
                 <form action="gestion_comentarios.php" method="POST">
                     <input type="hidden" name="id_edit" value="{{ comentario_editar.id }}">
                     
-                    {# IMPORTANTE: id="comentario-texto" para que tu JS lo reconozca #}
-                    <textarea name="texto" id="comentario-texto" style="width: 100%; height: 120px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;">{{ comentario_editar.texto }}</textarea>
+                    <div class="form-group-comentario">
+                        <textarea name="texto" id="comentario-texto">{{ comentario_editar.texto }}</textarea>
+                    </div>
                     
-                    <div style="margin-top: 10px;">
-                        <button type="submit" style="background: #2c3e50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Guardar Cambios</button>
-                        <a href="gestion_comentarios.php" style="margin-left: 10px; color: #666;">Cancelar</a>
+                    <div>
+                        <button type="submit" class="btn-guardar-comentario">Guardar Cambios</button>
+                        <a href="gestion_comentarios.php" class="btn-cancelar-comentario">Cancelar</a>
                     </div>
                 </form>
             </div>
         {% endif %}
 
-        <table class="data-table" style="width: 100%; border-collapse: collapse;">
+        <table class="data-table table-comentarios">
             <thead>
-                <tr style="background: #eee;">
-                    <th style="padding: 10px; text-align: left;">Usuario</th>
-                    <th style="padding: 10px; text-align: left;">Comentario</th>
-                    <th style="padding: 10px; text-align: center;">Acciones</th>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Comentario</th>
+                    <th class="text-center-th">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for c in comentarios %}
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px;">
+                <tr class="row-comentario">
+                    <td class="user-meta-info">
                         <strong>{{ c.nombre }}</strong><br>
-                        <small style="color: #888;">{{ c.email }}</small>
+                        <small>{{ c.email }}</small><br>
+                        <span class="news-origin">En: {{ c.noticia_titulo }}</span>
                     </td>
-                    <td style="padding: 10px;">{{ c.texto }}</td>
-                    <td style="padding: 10px; text-align: center;" class="acciones-iconos">
+                    <td>{{ c.texto }}</td>
+                    <td class="acciones-iconos text-center-td">
                         <a href="gestion_comentarios.php?accion=editar&id={{ c.id }}">✏️</a>
                         <a href="gestion_comentarios.php?accion=borrar&id={{ c.id }}" onclick="return confirm('¿Borrar?')">🗑️</a>
                     </td>
@@ -50,12 +89,9 @@
             </tbody>
         </table>
 
-        <div style="margin-top: 20px;">
+        <div class="footer-navigation-panel">
             <a href="acceso.php">⬅ Volver al Menú</a>
         </div>
     </div>
 </div>
-
-{# Cargamos tu script para que gestione el oninput del textarea #}
-<script src="js/aside-comentarios.js"></script>
 {% endblock %}
