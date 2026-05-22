@@ -6,7 +6,7 @@
 
 <div class="form-container">
 
-    {# ================= BLOQUE 1: BUSCADOR (ARRIBA DEL TODO) ================= #}
+    {# Buscador #}
     <div class="form-section">
         <h3>Filtro de Búsqueda</h3>
         <form action="gestion_noticia.php" method="GET" class="search-box">
@@ -23,7 +23,7 @@
         </form>
     </div>
 
-    {# ================= BLOQUE 2: RESULTADOS Y LISTADO GENERAL ================= #}
+    {# listado#}
     <div class="form-section">
         <h3>Listado de Incidencias Disponibles</h3>
         {% if noticias is not empty %}
@@ -55,18 +55,18 @@
         {% endif %}
     </div>
 
-    {# ================= BLOQUE 3: FORMULARIO PRINCIPAL (ABAJO DEL TODO) ================= #}
+    {#formulario#}
     <div id="formulario" class="form-section {{ noticia.id ? 'editing-mode' : '' }}">
         <h3>{{ noticia.id ? 'Modificando Noticia (ID: ' ~ noticia.id ~ ')' : ' Añadir Nueva Noticia al Sistema' }}</h3>
         
         <form action="gestion_noticia.php" method="POST">
             <input type="hidden" name="id" value="{{ noticia.id }}">
 
-            {# --- DATOS GENERALES --- #}
+           
             <label>Título</label>
             <input type="text" name="titulo" value="{{ noticia.titulo }}" class="full-width" required>
 
-            <div class="grid-fields-3 mt-15">
+            <div class="grid-fields">
                 <div>
                     <label>Fecha y Hora</label>
                     <input type="datetime-local" name="fecha" value="{{ noticia.fecha ? noticia.fecha|date('Y-m-d\\TH:i') : '' }}" class="full-width">
@@ -103,8 +103,8 @@
             <label>Descripción</label>
             <textarea name="descripcion" rows="10" class="full-width">{{ noticia.descripcion }}</textarea>
 
-            {# --- GESTIÓN DE HASHTAGS --- #}
-            <div class="mt-20">
+            
+            <div class="hashtag">
                 <h3>Hashtags de la Noticia</h3>
                 <div class="hashtags-info-box">
                     Escribe las etiquetas asociadas a esta noticia separadas por comas (por ejemplo: <i>incendios, vandalismo, bomberos</i>).
@@ -113,8 +113,8 @@
                 <input type="text" id="hashtags-input" name="hashtags" value="{{ noticia.hashtags }}" class="full-width" placeholder="ejemplo1, ejemplo2, ejemplo3">
             </div>
 
-            {# --- GALERÍA DE IMÁGENES --- #}
-            <div class="mt-20">
+            {# las fotos #}
+            <div class="galeria_noticia">
                 <h3>Gestión de Galería</h3>
                 {% if imagenes is not empty %}
                     <div class="img-grid">
@@ -131,13 +131,13 @@
                     </div>
                 {% endif %}
                 
-                <div class="mt-20">
+                <div class="crear_imagen">
                     <label for="nueva-imagen">Asociar archivo de imagen local (Nombre o ruta):</label>
                     <input type="text" id="nueva-imagen" name="nueva_imagen_ruta" class="full-width" placeholder="ejemplo: noticia_1_1.png">
                 </div>
             </div>
 
-            <div class="actions-container mt-20">
+            <div class="actions-container">
                 {% if noticia.id %}
                     <a href="gestion_noticia.php" class="btn-cancel" Cancelar Edición</a>
                 {% endif %}

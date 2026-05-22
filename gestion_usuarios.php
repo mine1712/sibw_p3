@@ -3,7 +3,7 @@ session_start();
 require_once "vendor/autoload.php";
 include("includes/bd.php");
 
-// 1. Portero: Solo el Administrador gestiona esta tabla
+//Solo el Administrador gestiona esta tabla
 if (!isset($_SESSION['login']) || $_SESSION['rol'] !== 'administrador') {
     header("Location: acceso.php"); // Si no es administrador, lo mandamos a su panel general
     exit();
@@ -15,7 +15,7 @@ $twig = new \Twig\Environment($loader);
 
 $mensaje = "";
 
-// 2. Acciones de Administración
+// Acciones de Administración
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Cambiar Rol
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 3. Obtener lista completa para la tabla
+// Obtener lista completa para la tabla
 $res = $mysqli->query("SELECT id, email, rol FROM usuarios ORDER BY id ASC");
 $listaUsuarios = $res->fetch_all(MYSQLI_ASSOC);
 

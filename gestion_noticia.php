@@ -1,5 +1,4 @@
 <?php
-// 1. CONTROL DE SESIÓN ESTRICTO
 session_start();
 require_once "vendor/autoload.php"; 
 include("includes/bd.php");
@@ -14,15 +13,14 @@ $mysqli = conectarBD();
 $loader = new \Twig\Loader\FilesystemLoader('templates');
 $twig = new \Twig\Environment($loader);
 
-// Recuperamos ID si viene por GET/POST (para editar, cambiar portadas, etc.)
 $id_noticia = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : null;
 
 
-/* --- ACCIÓN 1: BORRAR NOTICIA --- */
+/* borrar noticia */
 if (isset($_GET['accion']) && $_GET['accion'] === 'borrar' && isset($_GET['id'])) {
     $id_borrar = intval($_GET['id']);
     
-    // 1. Borrar archivos físicos de la carpeta img/
+    // 1. Borra las img
     $res = $mysqli->query("SELECT ruta_archivo FROM imagenes WHERE id_noticia = $id_borrar");
     while ($row = $res->fetch_assoc()) {
         $ruta = "img/" . $row['ruta_archivo'];
@@ -31,7 +29,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'borrar' && isset($_GET['id'])
         }
     }
     
-    // 2. Borrar de la BD
+    // 2. Borra de la BD
     $mysqli->query("DELETE FROM imagenes WHERE id_noticia = $id_borrar");
     $mysqli->query("DELETE FROM comentarios WHERE id_noticia = $id_borrar");
     $mysqli->query("DELETE FROM noticia WHERE id = $id_borrar");
@@ -41,7 +39,7 @@ if (isset($_GET['accion']) && $_GET['accion'] === 'borrar' && isset($_GET['id'])
 }
 
 
-/* --- ACCIÓN 2: CAMBIAR PORTADA --- */
+/* cambiar fav */
 if (isset($_GET['hacer_principal'])) {
     $id_img = intval($_GET['hacer_principal']);
     if (!$id_noticia) {
@@ -63,7 +61,7 @@ if (isset($_GET['hacer_principal'])) {
 }
 
 
-/* --- ACCIÓN 3: BORRAR IMAGEN SUELTA --- */
+/* borrar imagen*/
 if (isset($_GET['borrar_img']) && $id_noticia) {
     $id_img = intval($_GET['borrar_img']);
     $mysqli->query("DELETE FROM imagenes WHERE id = $id_img");
@@ -72,7 +70,7 @@ if (isset($_GET['borrar_img']) && $id_noticia) {
 }
 
 
-/* --- ACCIÓN 4: PROCESAR FORMULARIO (GUARDAR / ACTUALIZAR) --- */
+/*procesar el form*/
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_noticia = !empty($_POST['id']) ? intval($_POST['id']) : null;
     
@@ -146,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
-/* --- RECOPILACIÓN PARA LA VISTA (EL BUSCADOR TRABAJA AQUÍ) --- */
+/* la noticia buscada */
 $busqueda = $_GET['q'] ?? '';
 $campo = $_GET['campo'] ?? 'titulo';
 $noticias = [];
@@ -168,7 +166,7 @@ if (!empty($busqueda)) {
     $noticias = $mysqli->query("SELECT id, titulo, fecha FROM noticia ORDER BY fecha DESC")->fetch_all(MYSQLI_ASSOC);
 }
 
-// Datos de la noticia seleccionada para editar (coincidiendo con las variables cortas de tu twig)
+// Datos de la noticia seleccionada para editar 
 $noticia = null;
 $imagenes = [];
 if ($id_noticia) {

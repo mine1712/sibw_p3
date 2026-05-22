@@ -37,23 +37,23 @@
             <li><a href="portada.php">Inicio</a></li>
 
             {% if session.login %}
-                {# --- SECCIÓN MI PERFIL: Acceso a edición y baja --- #}
+                {# Link a perfil #}
                 <li><a href="perfil.php" style="font-weight:bold; color:#3498db;">👤 Mi Perfil</a></li>
 
-                {# --- PANEL GENERAL (Noticias/Dashboard) --- #}
+                {# link a panel general #}
                 <li><a href="acceso.php">Panel de Gestión</a></li>
 
-                {# --- GESTIÓN DE NOTICIAS (Solo Gestores y Administradores) --- #}
+                {# link a gestion noticias #}
                 {% if session.rol == 'gestor' or session.rol == 'administrador' %}
                     <li><a href="gestion_noticia.php">Gestión Noticias</a></li>
                 {% endif %}
 
-                {# --- MODERACIÓN DE COMENTARIOS (Solo Moderadores y Administradores) --- #}
+                {# link a moderacion comentarios #}
                 {% if session.rol == 'moderador' or session.rol == 'administrador' %}
                     <li><a href="gestion_comentarios.php">Moderar Comentarios</a></li>
                 {% endif %}
 
-                {# --- GESTIÓN DE USUARIOS (Solo Administradores) --- #}
+                {# link a gestion de usuarios#}
                 {% if session.rol == 'administrador' %}
                     <li><a href="gestion_usuarios.php">Gestión Usuarios</a></li>
                 {% endif %}

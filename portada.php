@@ -18,5 +18,5 @@ $noticias = $resultado->fetch_all(MYSQLI_ASSOC);
 
 echo $twig->render('portada.twig', [
     'noticias' => $noticias,
-    'session'  => $_SESSION // Enviamos la sesión para mostrar "Gestión Noticias"
+    'session'  => $_SESSION 
 ]);

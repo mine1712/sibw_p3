@@ -1,5 +1,4 @@
 <?php
-// --- 1. ESTO ES LO QUE TE FALTA (VITAL) ---
 session_start(); 
 
 require_once 'vendor/autoload.php';
@@ -70,7 +69,6 @@ try {
     $imagenes = $sentenciaImg->get_result()->fetch_all(MYSQLI_ASSOC);
     $sentenciaImg->close();
 
-    // --- MEJORA: Consulta de comentarios con prepare para evitar sustos ---
     $sentenciaCom = $conexion->prepare("SELECT * FROM comentarios WHERE id_noticia = ? ORDER BY fecha DESC");
     $sentenciaCom->bind_param("i", $id);
     $sentenciaCom->execute();
@@ -84,7 +82,6 @@ try {
     exit;
 }
 
-// --- 2. AHORA $_SESSION YA TIENE VALOR ---
 echo $twig->render('noticia.twig', [
     'noticia'     => $noticia,
     'imagenes'    => $imagenes,

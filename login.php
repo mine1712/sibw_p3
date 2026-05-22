@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->get_result()->fetch_assoc();
 
         if ($user && password_verify($pass, $user['password'])) {
-            // "Llenamos la mochila"
             $_SESSION['login']   = true;
             $_SESSION['id_user'] = (int)$user['id'];
             $_SESSION['user']    = $email;

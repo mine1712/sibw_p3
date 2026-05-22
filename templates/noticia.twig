@@ -46,7 +46,7 @@
                     <p class="texto">{{ com.texto }}</p>
 
                     {# --- PUNTO A: Iconos de gestión para moderadores --- #}
-                    {% if session.rol in ['moderador', 'superusuario'] %}
+                    {% if session.rol in ['moderador', 'administrador'] %}
                         <div class="admin-comentarios-aside">
                             <a href="gestion_comentarios.php?accion=editar&id={{ com.id }}" title="Editar comentario">✏️</a>
                             <a href="gestion_comentarios.php?accion=borrar&id={{ com.id }}" 
@@ -63,8 +63,8 @@
     <main class="zona-detalle">
         <article class="caja-noticia-completa">
             
-            {# --- HERRAMIENTAS DE GESTIÓN (Noticia) --- #}
-            {% if session.rol == 'gestor' or session.rol == 'superusuario' %}
+            {# gestion de noticia #}
+            {% if session.rol == 'gestor' or session.rol == 'administrador' %}
                 <div class="admin-bar">
                     <strong class="admin-label">⚙️ Gestión:</strong>
                     <a href="gestion_noticia.php?id={{ noticia.id }}" class="admin-link-edit">✏️ Editar Noticia</a>
@@ -94,7 +94,7 @@
                 <p>{{ noticia.descripcion|nl2br }}</p>
             </div>
 
-            {# --- HASHTAGS --- #}
+            {# hashtag#}
             {% if noticia.hashtags %}
                 <div class="noticia-hashtags">
                     {% set tags = noticia.hashtags|replace({' ': ','})|split(',') %}
@@ -108,7 +108,7 @@
                 </div>
             {% endif %}
 
-            {# --- GALERÍA DE FOTOS --- #}
+            {# fotos #}
             <div class="galeria-fotos">
                 {% for img in imagenes %}
                     <div class="foto-item">

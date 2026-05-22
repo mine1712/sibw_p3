@@ -11,7 +11,7 @@
     {% endif %}
 
     <div class="contenedor-perfil-unico">
-        {# --- EDICIÓN DE DATOS PERSONALES --- #}
+        {# editar datos#}
         <section class="card-gestion">
             <h3> Mis Datos Personales</h3>
             <form action="perfil.php" method="POST" class="form-perfil">
@@ -33,7 +33,7 @@
 
             <hr class="separador-perfil">
 
-            {# DARSE DE BAJA --- #}
+            {# darse de baja #}
             <form action="perfil.php" method="POST" onsubmit="return confirm('¿Estás seguro? Esta acción es irreversible.')">
                 <input type="hidden" name="accion" value="auto_eliminar">
                 <button type="submit" class="btn-peligro-link">Darse de baja del sistema</button>
