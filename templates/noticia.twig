@@ -1,7 +1,7 @@
 {% extends "portada.twig" %}
 
 {% block contenido_principal %}
-    {# --- CAMBIO: Añadimos data-es-moderador para que el JS sepa si pintar botones en comentarios nuevos --- #}
+   
     <aside class="zona-comentarios" 
            data-id-noticia="{{ noticia.id }}" 
            data-lugares="{{ lugares|json_encode }}"

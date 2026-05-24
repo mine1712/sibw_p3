@@ -24,16 +24,22 @@
                 <td>{{ u.id }}</td>
                 <td>{{ u.email }}</td>
                 <td>
-                    <form action="gestion_usuarios.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="id_usuario" value="{{ u.id }}">
-                        <input type="hidden" name="accion" value="cambiar_rol">
-                        <select name="nuevo_rol" onchange="this.form.submit()" {{ u.id == session.id_user ? 'disabled' : '' }}>
-                            {% for rol in roles_disponibles %}
-                                <option value="{{ rol }}" {{ u.rol == rol ? 'selected' : '' }}>{{ rol|capitalize }}</option>
-                            {% endfor %}
-                        </select>
-                    </form>
-                </td>
+    <form action="gestion_usuarios.php" method="POST" style="display:inline;">
+        <input type="hidden" name="id_usuario" value="{{ u.id }}">
+        <input type="hidden" name="accion" value="cambiar_rol">
+        
+        <select name="nuevo_rol" onchange="this.form.submit()" 
+                
+            
+            {% for rol in roles_disponibles %}
+                <option value="{{ rol }}" 
+                        {% if u.rol == rol %}selected="selected"{% endif %}>
+                    {{ rol|capitalize }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</td>
                 <td>
                     {% if u.id != session.id_user %}
                         <form action="gestion_usuarios.php" method="POST" onsubmit="return confirm('¿Eliminar usuario?')">

@@ -1,7 +1,7 @@
 {% extends "portada.twig" %}
 
 {% block contenido_principal %}
-<!-- Vinculamos el archivo CSS externo que acabamos de crear -->
+
 <link rel="stylesheet" href="css/gestion_noticia.css">
 
 <div class="form-container">
@@ -104,14 +104,24 @@
             <textarea name="descripcion" rows="10" class="full-width">{{ noticia.descripcion }}</textarea>
 
             
-            <div class="hashtag">
-                <h3>Hashtags de la Noticia</h3>
-                <div class="hashtags-info-box">
-                    Escribe las etiquetas asociadas a esta noticia separadas por comas (por ejemplo: <i>incendios, vandalismo, bomberos</i>).
-                </div>
-                <label for="hashtags-input">Etiquetas (Tags)</label>
-                <input type="text" id="hashtags-input" name="hashtags" value="{{ noticia.hashtags }}" class="full-width" placeholder="ejemplo1, ejemplo2, ejemplo3">
-            </div>
+           <div class="hashtag">
+    <h3>Gestión de Hashtags</h3>
+    
+    <div class="hashtags-list">
+        {% for tag in todosLosTags %}
+            <label>
+                <input type="checkbox" name="tags_existentes[]" value="{{ tag.id }}" 
+                {{ tag.id in tagsDeLaNoticia ? 'checked' : '' }}>
+                {{ tag.nombre }}
+            </label>
+        {% endfor %}
+    </div>
+
+    <hr>
+    
+    <label for="nuevos-tags">Añadir nuevos (separados por comas):</label>
+    <input type="text" name="nuevos_tags" class="full-width" placeholder="ejemplo: lluvia, obras">
+</div>
 
             {# las fotos #}
             <div class="galeria_noticia">
@@ -139,7 +149,7 @@
 
             <div class="actions-container">
                 {% if noticia.id %}
-                    <a href="gestion_noticia.php" class="btn-cancel" Cancelar Edición</a>
+                    <a href="gestion_noticia.php" class="btn-cancel"> Cancelar Edición</a>
                 {% endif %}
                 <button type="submit" class="btn-save">
                     {{ noticia.id ? 'Actualizar Registro' : 'Crear Noticia' }}

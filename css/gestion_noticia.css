@@ -50,8 +50,40 @@ label {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+/* --- Contenedor de la lista de checkboxes --- */
+.hashtags-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 200px;      /* Altura máxima para que no se desborde */
+    overflow-y: auto;       /* Scroll vertical si hay muchos hastag */
+    margin-bottom: 15px;
+}
 
-/* Espaciados específicos */
+.hashtags-list label {
+    font-weight: normal;  
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.hashtags-list input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.hashtag hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+
 .mt-15 { margin-top: 15px; }
 .nueva_imagen { margin-top: 20px; }
 .mb-15 { margin-bottom: 15px; }

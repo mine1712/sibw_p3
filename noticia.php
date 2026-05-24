@@ -22,7 +22,7 @@ if (isset($_GET['ajax_lugares'])) {
     echo json_encode($lugares);
     exit; 
 }
-
+//mensaje
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_noticia = filter_input(INPUT_POST, 'id_noticia', FILTER_VALIDATE_INT);
     $nombre = strip_tags(trim($_POST['nombre'] ?? ''));

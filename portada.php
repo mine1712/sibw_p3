@@ -1,5 +1,5 @@
 <?php
-session_start(); // Imprescindible para el menú de gestión
+session_start();
 require_once 'vendor/autoload.php';
 require_once 'includes/bd.php';
 
